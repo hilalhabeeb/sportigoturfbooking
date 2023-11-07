@@ -472,6 +472,7 @@ from datetime import datetime, timedelta
 from django.shortcuts import render, HttpResponseRedirect
 from .models import TurfListing
 
+@login_required
 def turf_detail(request, turf_id):
     if request.method == 'POST':
         # Get the selected time slot from the form
@@ -482,18 +483,12 @@ def turf_detail(request, turf_id):
 
         # Split the time slot into start and end times
         start_time_str, end_time_str = selected_time_slot.split(' - ')
-
-        # Convert the start and end times to datetime objects
         start_time = datetime.strptime(start_time_str, '%H:%M').time()
         end_time = datetime.strptime(end_time_str, '%H:%M').time()
-
-        # Get the turf listing
         turf = TurfListing.objects.get(id=turf_id)
-
-        # Calculate the total cost (you may need to adjust this calculation)
         total_cost = (end_time.hour - start_time.hour) * turf.price_per_hour
 
-        # Get the current user (assuming you're using authentication)
+
         user = request.user
 
         # Create a new booking
@@ -506,8 +501,9 @@ def turf_detail(request, turf_id):
             end_time=end_time,
             total_cost=total_cost
         )
+        messages.success(request, 'Booking was successful!')
 
-        return redirect('booking_history')  # You can define a success URL
+        return redirect('booking_history')   # You can define a success URL
 
     # Your existing code for displaying the turf details
     turf = TurfListing.objects.get(id=turf_id)
@@ -528,13 +524,22 @@ def turf_detail(request, turf_id):
 
     return render(request, 'turf_detail.html', context)
 
+
+
+
+from django.contrib import messages
+
 def booking_history(request):
     # Retrieve the user's booking history
     user_bookings = Booking.objects.filter(user=request.user).order_by('-created_at')
 
-    # Pass the bookings to the template
+    # Retrieve messages
+    messages_list = messages.get_messages(request)
+
+    # Pass the bookings and messages to the template
     context = {
-        'user_bookings': user_bookings
+        'user_bookings': user_bookings,
+        'messages': messages_list
     }
 
     return render(request, 'booking_history.html', context)
@@ -561,29 +566,31 @@ def manage_turf(request, turf_id):
 
  
 from django.http import JsonResponse
+from django.db.models import Q
 
 def search(request):
     query = request.GET.get('query')
     results = []
 
     if query:
-        # Query the database for matching turfs by name or location
+        # Query the database for matching turfs by turf name or location
         results = TurfListing.objects.filter(
-            turf_name__icontains=query) | TurfListing.objects.filter(location__icontains=query)
+            Q(turf_name__icontains=query) | Q(location__icontains=query)
+        )
 
-    # Create a list of results
-    search_results = [{'turf_name': turf.turf_name, 'location': turf.location} for turf in results]
+    # Create a list of results with the required attributes
+    search_results = [
+        {
+            'turf_name': turf.turf_name,
+            'location': turf.location,
+            'image': turf.image.url,
+            'id': turf.id,
+            'price_per_hour': turf.price_per_hour,
+        }
+        for turf in results
+    ]
 
     return JsonResponse(search_results, safe=False)
-
-
-
-
-
-
-
-
-
 
 
 

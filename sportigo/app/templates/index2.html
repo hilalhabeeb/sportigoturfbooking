@@ -13,9 +13,18 @@
     <link rel="stylesheet" href="{% static 'css/vendor.css' %}">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/layerslider.css' %}">
+
+
+
     <script src="{% static 'js/vendor/modernizr.js' %}"></script>
     <style>
         /* Apply background image to the entire page */
+    
+ @import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
+
+    h2,h3,p {
+        font-family: 'Times New Roman', serif;
+    }
 
     
     
@@ -27,6 +36,7 @@
     .turf-booking h2 {
         font-size: 24px;
         margin-bottom: 20px;
+        font-family: 'Times New Roman', serif;
     }
 
     .turf-booking .turf-list {
@@ -51,6 +61,7 @@
     }
 
     .turf-booking .booking-form {
+        font-family: 'Times New Roman', serif;
         margin-top: 20px;
         padding: 20px;
         background-color: #fff;
@@ -60,6 +71,7 @@
     }
 
     .turf-booking .booking-form label {
+        font-family: 'Times New Roman', serif;
         display: block;
         margin-bottom: 10px;
     }
@@ -92,18 +104,77 @@
     transition: background-color 0.3s ease; /* Add a hover effect */
 }
 
-.book-button:hover {
-    background-color: rgb(206, 75, 5); /* Change background color on hover */
-}
+    .book-button:hover {
+        background-color: rgb(206, 75, 5); /* Change background color on hover */
+    }
 
-    /* Adjust the height of the header/navbar */
     .header-upper {
-        height: 50px; /* Change the height to your desired value */
+        height: 50px; 
     }
 
     .header-lower {
         height: 90px; /* Change the height to your desired value */
     }
+    .search-results {
+    font-family: 'Times New Roman', serif;
+    display: flex;
+    flex-wrap: nowrap; /* Ensure the results stay in one line without wrapping */
+    overflow-x: auto; /* Add horizontal scroll if needed */
+    }
+
+    .turf-item {
+    flex: 0 0 auto; /* Allow each result to have a fixed width */
+    margin: 10px; /* Add margin between results */
+    }
+    .container1 {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    background-color: #fff;
+}
+
+.search-section {
+    padding: 20px;
+    background-color: #f9f9f9;
+}
+
+#search-form {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+    margin-left: 280px;
+}
+
+.input-group {
+    flex-grow: 1;
+    
+}
+
+#search-input {
+    width: 50%;
+    padding: 20px;
+    border: 1px solid #342d2d;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.btn {
+    padding: 7px 12px;
+    border: none;
+    border-radius: 4px;
+    background-color: rgb(67, 54, 54); 
+    color: #fefcfc;
+    cursor: pointer;
+}
+
+
+.btn:hover {
+    background-color: #0b4c7e;
+}
+
 </style>
 </head>
 <body>
@@ -121,7 +192,7 @@
         <div class="header-lower clearfix">
             <div class="container">
                 <div class="row">
-                    <h1 class="logo"><a href="index.html"><img src="{% static 'images/logo12.png' %}" width="190"
+                    <h1 class="logo"><a href="#"><img src="{% static 'images/logo12.png' %}" width="190"
                                 height="190" alt="image"></a></h1>
                     <div class="menubar">
                         <nav class="navbar">
@@ -156,16 +227,17 @@
         </div>
     </header>
     <br><br1><br><br><br><br><br>
+        
         <section class="search-section">
             <div class="container">
-                <h2>Search for Turfs</h2>
+  
                 <form id="search-form">
                     <div class="input-group mb-3">
                         <input type="text" id="search-input" class="form-control" placeholder="Search by turf name or location" />
                         <button type="submit" class="btn btn-primary">Search</button>
                     </div>
                 </form>
-                <div id="search-results">
+                <div id="search-results" class="search-results">
                     <!-- Display search results here -->
                 </div>
             </div>
@@ -173,7 +245,8 @@
     <!-- Turf Booking section -->
     <section class="turf-booking">
         <div class="container">
-            <h2>Available Turfs for Booking</h2>
+            <center><h2>Hi {{ user.first_name }} ,Check out the available Turfs here</h2></center>
+            
             <div class="turf-list">
                 {% for turf in available_turfs %}
                     <div class="turf-item">
@@ -211,14 +284,18 @@
 <script src="{% static 'js/vendor/vendor.js' %}"></script>
 <script src="{% static 'js/main.js' %}"></script>
 <script>
-    $(document).ready(function () {
         $('#search-form').submit(function (e) {
             e.preventDefault(); // Prevent the default form submission
+            searchTurf();
         });
 
         $('#search-input').on('input', function () {
-            var query = $(this).val();
-            var searchUrl = '/search/'; // Replace jkhghgfghjk 
+            searchTurf();
+        });
+
+        function searchTurf() {
+            var query = $('#search-input').val();
+            var searchUrl = '/search/';
 
             $.ajax({
                 url: searchUrl,
@@ -226,16 +303,22 @@
                 dataType: 'json',
                 success: function (data) {
                     var resultsHtml = '';
+
                     for (var i = 0; i < data.length; i++) {
-                        var turfName = data[i].turf_name;
-                        var location = data[i].location;
-                        resultsHtml += '<p>Turf Name: ' + turfName + '</p><p>Location: ' + location + '</p>';
+                        resultsHtml += '<div class="turf-item">';
+                        resultsHtml += '<img src="' + data[i].image + '" alt="' + data[i].turf_name + '" style="max-width: 300px; max-height: 250px;">';
+                        resultsHtml += '<h3>' + data[i].turf_name + '</h3>';
+                        resultsHtml += '<p>Location: ' + data[i].location + '</p>';
+                        resultsHtml += '<p>Price: ₹' + data[i].price_per_hour + '/hr</p>';
+                        resultsHtml += '<a href="/turf_detail/' + data[i].id + '" class="book-button">View Turf</a>';
+                        resultsHtml += '</div>';
                     }
                     $('#search-results').html(resultsHtml);
                 }
             });
-        });
-    });
+        }
+
+
 </script>
 </body>
 </html>

@@ -116,15 +116,15 @@ td[colspan="5"] {
             <li><a href="#">Contact</a></li>
         </ul>
     </header>
+
     {% if messages %}
-    <div class="alert">
-        <ul class="messages">
-            {% for message in messages %}
-            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-            {% endfor %}
-        </ul>
-    </div>
+    <ul class="messages">
+        {% for message in messages %}
+            <h2><li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li></h2>
+        {% endfor %}
+    </ul>
     {% endif %}
+
     <h1>Booking History</h1>
     <table>
         <thead>
