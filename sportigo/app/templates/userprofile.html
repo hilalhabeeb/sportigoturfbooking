@@ -1,0 +1,350 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Profile</title>
+    <style>
+        /* Reset some default styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Global styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Header styles */
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+        }
+
+        /* Navigation styles */
+        nav {
+            background-color: #444;
+            color: #fff;
+            text-align: center;
+            padding: 10px;
+        }
+        nav ul {
+            list-style-type: none;
+        }
+        nav ul li {
+            display: inline;
+            margin-right: 20px;
+        }
+        nav ul li a {
+            text-decoration: none;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        /* Container styles */
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Profile section styles */
+        .profile {
+            text-align: center;
+            padding: 20px;
+        }
+        .profile img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #333;
+        }
+        .profile h1 {
+            margin-top: 10px;
+            font-size: 24px;
+        }
+
+        /* User details styles */
+        .user-details {
+            margin-top: 20px;
+        }
+        .user-details p {
+            margin: 10px 0;
+        }
+        .user-details strong {
+            font-weight: bold;
+        }
+
+        /* Form for updating user details */
+        .update-form {
+            margin-top: 20px;
+            background-color: #f4f4f4;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        .update-form label {
+            display: block;
+            margin-top: 10px;
+        }
+        .update-form input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+        .update-form button {
+            background-color: #333;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+
+                .user-details {
+            margin-top: 20px;
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+        }
+
+        .detail-label {
+            font-weight: bold;
+        }
+
+        .detail-value {
+            color: #555;
+        }
+        .error-message {
+        color: red;
+        }
+
+    </style>
+    
+</head>
+<body>
+    <header>
+        <h1>User Profile</h1>
+    </header>
+    <nav>
+        <ul>
+            <li><a href="{% url 'index2' %}">Home</a></li>
+            <!-- Add more navigation links as needed -->
+        </ul>
+    </nav>
+    <div class="container">
+
+
+        <div class="profile">
+            <img src="{% static 'images/icons/dp.png' %}" alt="User Profile Image">
+            <h1>Hello, {{ user.first_name }} {{ user.last_name }}</h1>
+        </div>
+        <div class="user-details">
+            <h2>Your Details</h2>
+            <div class="detail-item">
+                <span class="detail-label">Email:</span>
+                <span class="detail-value">{{ user.email }}</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">Role:</span>
+                <span class="detail-value">{{ user.role }}</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">Date of Birth:</span>
+                <span class="detail-value">{{ user.dob }}</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">Phone Number:</span>
+                <span class="detail-value">{{ user.phone_number }}</span>
+            </div>
+            <!-- You can add more user details here as needed -->
+        </div>
+
+        <!-- Form for updating user details -->
+        <div class="update-form">
+            <h2>Update Your Details:</h2>
+            <form method="POST" action="{% url 'update_user_details' %}" id="update-details-form">
+                {% csrf_token %}
+
+                <label for="new_first_name">New First Name:</label>
+                <input type="text" id="new_first_name" name="new_first_name" value="{{ user.first_name }}">
+                <div class="error-message" id="first-name-error"></div>
+
+                <label for="new_last_name">New Last Name:</label>
+                <input type="text" id="new_last_name" name="new_last_name" value="{{ user.last_name }}">
+                <div class="error-message" id="last-name-error"></div>
+
+                <label for="new_phone_number">New Phone Number:</label>
+                <input type="text" id="new_phone_number" name="new_phone_number" value="{{ user.phone_number }}">
+                <div class="error-message" id="phone-number-error"></div>
+
+                <button type="submit">Update Profile</button>
+            </form>
+        </div>
+
+        <!-- Form for changing the password -->
+        <!-- Form for changing the password -->
+<!-- Form for changing the password -->
+<div class="update-form">
+    <h2>Change Your Password:</h2>
+    <form method="POST" action="{% url 'change_password' %}" id="change-password-form">
+        {% csrf_token %}
+
+        <label for="old_password">Old Password:</label>
+        <input type="password" id="old_password" name="old_password" required>
+        
+        <!-- Display validation errors for old_password field -->
+        {% for error in form.old_password.errors %}
+            <div class="error-message">{{ error }}</div>
+        {% endfor %}
+
+        <label for="new_password1">New Password:</label>
+        <input type="password" id="new_password1" name="new_password1" required>
+        
+
+
+        <div id="password-requirements-error" class="error-message"></div>
+        
+        <label for="new_password2">Confirm Password:</label>
+        <input type="password" id="new_password2" name="new_password2" required>
+
+
+        <div class="error-message" id="password-match-error"></div>
+
+        <button type="submit">Change Password</button>
+    </form>
+</div>
+
+        <br>
+        <div class="messages">
+            {% for message in messages %}
+                <div class="message {{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const updateDetailsForm = document.getElementById('update-details-form');
+            const firstNameInput = document.getElementById('new_first_name');
+            const lastNameInput = document.getElementById('new_last_name');
+            const phoneNumberInput = document.getElementById('new_phone_number');
+            const changePasswordForm = document.getElementById('change-password-form');
+            const newPassword1Input = document.getElementById('new_password1');
+            const newPassword2Input = document.getElementById('new_password2');
+            const passwordMatchError = document.getElementById('password-match-error');
+            const passwordRequirementsError = document.getElementById('password-requirements-error');
+    
+            newPassword2Input.addEventListener('input', validatePasswordMatch);
+            newPassword1Input.addEventListener('input', validatePasswordRequirements);
+            firstNameInput.addEventListener('input', validateFirstName);
+            lastNameInput.addEventListener('input', validateLastName);
+            phoneNumberInput.addEventListener('input', validatePhoneNumber);
+    
+            function validatePasswordMatch() {
+                const newPassword1 = newPassword1Input.value;
+                const newPassword2 = newPassword2Input.value;
+                passwordMatchError.textContent = '';
+    
+                if (newPassword1 !== newPassword2) {
+                    passwordMatchError.textContent = 'Passwords do not match.';
+                }
+            }
+    
+            function validatePasswordRequirements() {
+                const newPassword1 = newPassword1Input.value;
+                passwordRequirementsError.textContent = '';
+    
+                const passwordRequirements = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
+    
+                if (!passwordRequirements.test(newPassword1)) {
+                    passwordRequirementsError.textContent = 'Password should contain at least 1 alphabet, 1 digit, 1 special character, and be at least 6 characters long.';
+                }
+            }
+    
+            function validateFirstName() {
+                const firstName = firstNameInput.value.trim();
+                const errorElement = document.getElementById('first-name-error');
+    
+                if (!/^[a-zA-Z]+$/.test(firstName)) {
+                    errorElement.textContent = 'First name should contain only alphabets.';
+                } else {
+                    errorElement.textContent = '';
+                }
+            }
+    
+            function validateLastName() {
+                const lastName = lastNameInput.value.trim();
+                const errorElement = document.getElementById('last-name-error');
+    
+                if (!/^[a-zA-Z]+$/.test(lastName)) {
+                    errorElement.textContent = 'Last name should contain only alphabets.';
+                } else {
+                    errorElement.textContent = '';
+                }
+            }
+    
+            function validatePhoneNumber() {
+                const phoneNumber = phoneNumberInput.value.trim();
+                const errorElement = document.getElementById('phone-number-error');
+    
+                if (phoneNumber === '' || !/^\d{10}$/.test(phoneNumber)) {
+                    errorElement.textContent = 'Invalid phone number. It should be 10 digits.';
+                } else {
+                    errorElement.textContent = '';
+                }
+            }
+    
+            updateDetailsForm.addEventListener('submit', function(e) {
+                validateFirstName();
+                validateLastName();
+                validatePhoneNumber();
+    
+                if (
+                    document.getElementById('first-name-error').textContent ||
+                    document.getElementById('last-name-error').textContent ||
+                    document.getElementById('phone-number-error').textContent
+                ) {
+                    e.preventDefault();
+                }
+            });
+    
+            changePasswordForm.addEventListener('submit', function(e) {
+                validatePasswordMatch();
+                validatePasswordRequirements();
+    
+                if (passwordMatchError.textContent || passwordRequirementsError.textContent) {
+                    e.preventDefault();
+                }
+            });
+        });
+    </script>
+    
+    
+
+        
+</body>
+
+</html>

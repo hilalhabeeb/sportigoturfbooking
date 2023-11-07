@@ -1,0 +1,462 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background-image: url("{% static '..\static\images\loginbg.jpg' %}"); /* Replace with your own image path */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        /* Stylish navigation bar */
+        .navbar {
+            background-color: #333; /* Background color of the navbar */
+            overflow: hidden;
+        }
+
+        .navbar a {
+            float: right;
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 10px 11px; /* Spacing for the links */
+            text-decoration: none;
+        }
+
+        .navbar a:hover {
+            background-color: #ddd; /* Background color on hover */
+            color: #333;
+        }
+
+        /* Stylish logo placeholder */
+        .logo {
+            float: left;
+            
+        }
+
+        /* Clear the float to ensure content doesn't wrap around the logo */
+        .navbar::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
+
+        /* Stylish registration form */
+        .signup-container {
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 500px; /* Increased width */
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        /* Style placeholders as labels */
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="date"] {
+            width: 95%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+		select {
+		    width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+		
+		}
+
+        input[type="text"]::placeholder,
+        input[type="email"]::placeholder,
+        input[type="password"]::placeholder,
+        select::placeholder,
+        input[type="date"]::placeholder {
+            color: #555;
+            font-weight: bold;
+        }
+
+        /* Set the width of the role select box explicitly */
+        select#role {
+            width: calc(100% - 18px); /* Adjust based on padding and border */
+        }
+
+        /* Place First Name and Last Name on the same line */
+        .name-group {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .name-group input[type="text"] {
+            width: 60%;
+        }
+
+        .error-message {
+            color: red;
+        }
+
+        .submit-btn {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .submit-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .success-message {
+            color: green;
+        }
+	    select:focus {
+            border-color: #007BFF; /* Change border color on focus */
+        }
+		.error-message {
+            color: #e74c3c;
+            margin-top: 5px;
+            font-size: 12px;
+        }
+
+        .success-message {
+            color: #27ae60;
+            margin-top: 5px;
+            font-size: 12px;
+        }
+        .website-name {
+            color: white;
+            font-size: 20px; /* Adjust font size */
+            font-weight: bold;
+            text-align: center;
+        }
+        select option[selected] {
+            font-weight: bold;
+            color: #555;
+      
+      }
+      .toast-container {
+            position: fixed;
+            top: 10px; /* Adjust the top position as needed */
+            right: 10px; /* Adjust the right position as needed */
+            background: rgba(76, 175, 80, 0.9); /* Adjust background color as needed */
+            color: #fff; /* Adjust text color as needed */
+            padding: 10px;
+            border-radius: 5px;
+            transition: opacity 0.5s;
+        }
+
+        .toast-message {
+            font-size: 16px;
+        }
+        
+    </style>
+</head>
+<body>
+    <!-- Stylish navbar with Home link and logo placeholder -->
+    <div class="navbar">
+        <div class="logo">
+            <!-- Add your logo here -->
+            <img src="{% static 'images/logo1.png' %}" alt="Your Logo" width="90" height="90">
+        </div>
+        <div class="website-name">
+            <br>
+            Welcome to Sportigo ! 
+        </div>
+        <a href="{% url 'index' %}">Home</a>
+        <a href="{% url 'about' %}">About us</a>
+        <!-- Add more links as needed -->
+    </div>
+
+    <!-- Stylish registration form -->
+    <div class="signup-container">
+        <h2>Sign Up</h2>
+        <form id="signup-form" method="POST" action="{% url 'signup' %}">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <select id="role" name="role" required>
+                    <option value="normal_user" selected>Normal User</option>
+                    <option value="club_user">Club User</option>
+                </select>
+            </div>
+            
+            <div class="form-group name-group">
+                <input type="text" id="fname" name="fname" placeholder="First Name" required>
+                <span id="fname-error" class="error-message"></span>
+            </div>
+            
+            <div class="form-group name-group">
+                <input type="text" id="lname" name="lname" placeholder="Last Name" required>
+                <span id="lname-error" class="error-message"></span>
+            </div>
+            
+            <div class="form-group">
+                <input type="date" id="dob" name="dob" placeholder="Date of Birth" required>
+                <span id="dob-error" class="error-message"></span>
+            </div>
+            
+            <div class="form-group">
+                <input type="email" id="email" name="email" placeholder="Email" required>
+                <span id="email-error" class="error-message"></span>
+            </div>
+            
+            <div class="form-group">
+                <input type="text" id="phone_number" name="phone_number" placeholder="Phone Number" required>
+                <span id="phone_number-error" class="error-message"></span>
+            </div>
+            
+            <div class="form-group">
+                <input type="password" id="password" name="password" placeholder="Password" required>
+                <span id="password-error" class="error-message"></span>
+            </div>
+            
+            <div class="form-group">
+                <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirm Password" required>
+                <span id="confirm-password-error" class="error-message"></span>
+            </div>
+            
+            <button type="submit" class="submit-btn" id="signup-btn">Sign Up</button>
+            <span id="success-message" class="success-message"></span>
+        </form>
+ 
+    
+
+        <p class="signup">Already have an account? Log in here. <a href="{% url 'user_login' %}">Login</a></p>
+    </div>
+ 
+</body>
+
+<script>
+    
+    const email = document.getElementById('email');
+    const password = document.getElementById('password');
+    const confirmPassword = document.getElementById('confirm-password');
+    const dob = document.getElementById('dob');
+    const emailError = document.getElementById('email-error');
+    const passwordError = document.getElementById('password-error');
+    const confirmPasswordError = document.getElementById('confirm-password-error');
+    const dobError = document.getElementById('dob-error');
+    const fname = document.getElementById("fname");
+    const lname = document.getElementById("lname");
+    const fnameError = document.getElementById("fname-error");
+    const lnameError = document.getElementById("lname-error");
+    const phone_number = document.getElementById("phone_number");
+    const phone_numberError = document.getElementById("phone_number-error");
+
+    // Function to validate First Name
+    function validateFirstName() {
+        var fnameValue = fname.value.trim();
+        var fnameRegex = /^[A-Za-z]+$/;
+
+        if (!fnameValue.match(fnameRegex)) {
+            fnameError.textContent = "Please enter a valid First Name (letters only).";
+        } else {
+            fnameError.textContent = "";
+        }
+    }
+
+    // Function to validate Last Name
+    function validateLastName() {
+        var lnameValue = lname.value.trim();
+        var lnameRegex = /^[A-Za-z]+$/;
+
+        if (!lnameValue.match(lnameRegex)) {
+            lnameError.textContent = "Please enter a valid Last Name (letters only).";
+        } else {
+            lnameError.textContent = "";
+        }
+    }
+
+    // Function to validate Email
+function validateEmail() {
+    var emailValue = email.value.trim();
+    var emailRegex = /^(?!.*\.{2,})(?!.*@{2,})[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+
+    if (!emailRegex.test(emailValue) || emailValue.indexOf('.') < emailValue.indexOf('@')) {
+        emailError.textContent = "Please enter a valid email address.";
+    } else {
+        emailError.textContent = "";
+        emailvalid();
+    }
+}
+
+function emailvalid() {
+    var emailValue = email.value.trim();
+    fetch(`/check_user_exists/?email=${emailValue}`)
+        .then(response => response.json())
+        .then(data => {
+            bool = data.exists;
+            if (!bool) {
+                // Handle the case where the email is not registered
+                // Clear any previous error messages if necessary
+                emailError.textContent = "";
+            } else {
+                emailError.textContent = "Email already registered";
+            }
+        })
+        .catch(error => {
+            console.error("Error during email validation:", error);
+        });
+}
+
+    // Function to validate Password
+    function validatePassword() {
+        var passwordValue = password.value;
+
+        // Regular expressions for the additional password requirements
+        var digitRegex = /\d/;
+        var uppercaseRegex = /[A-Z]/;
+        var lowercaseRegex = /[a-z]/;
+        var specialCharRegex = /[!@#$%^&*()_+{}\[\]:;<>,.?~\\-]/;
+
+        // Check all the conditions
+        var isDigitValid = digitRegex.test(passwordValue);
+        var isUppercaseValid = uppercaseRegex.test(passwordValue);
+        var isLowercaseValid = lowercaseRegex.test(passwordValue);
+        var isSpecialCharValid = specialCharRegex.test(passwordValue);
+        var isLengthValid = passwordValue.length >= 8;
+
+        // Update the password error message
+        if (!isDigitValid || !isUppercaseValid || !isLowercaseValid || !isSpecialCharValid || !isLengthValid) {
+            passwordError.textContent = "Password must contain at least one numeric digit, one uppercase letter, one lowercase letter, one special character, and be at least 8 characters long.";
+        } else {
+            passwordError.textContent = "";
+        }
+    }
+
+    // Function to validate Confirm Password
+    function validateConfirmPassword() {
+        var confirmPasswordValue = confirmPassword.value;
+        var passwordValue = password.value;
+        if (confirmPasswordValue !== passwordValue) {
+            confirmPasswordError.textContent = "Passwords do not match.";
+        } else {
+            confirmPasswordError.textContent = "";
+        }
+    }
+
+    // Function to validate Date of Birth
+    function validateDateOfBirth() {
+        var dobValue = dob.value;
+        var currentDate = new Date();
+        var selectedDate = new Date(dobValue);
+        var minDate = new Date('2013-01-01'); // Minimum allowed DOB
+        var maxDate = new Date('1970-01-01');
+
+        // Check if the selectedDate is a valid date and not in the future
+        if (isNaN(selectedDate) || selectedDate > currentDate || selectedDate > minDate || selectedDate < maxDate) {
+            dobError.textContent = "Please enter a valid Date of Birth.";
+        } else {
+            dobError.textContent = "";
+        }
+    }
+
+    // Function to validate Mobile Number
+    function validateMobileNumber() {
+        var phone_numberValue = phone_number.value.trim();
+        var phoneRegex = /^[6-9]\d{9}$/; // Matches a 10-digit phone number starting with 6-9
+
+        if (!phone_numberValue.match(phoneRegex)) {
+            phone_numberError.textContent = "Please enter a valid 10-digit Indian mobile number starting with 6-9.";
+        } else {
+            phone_numberError.textContent = "";
+        }
+    }
+
+    // Function to enable/disable the submit button based on validation
+    function toggleSubmitButton() {
+        const submitButton = document.getElementById('signup-btn');
+        const isFirstNameValid = !fnameError.textContent;
+        const isLastNameValid = !lnameError.textContent;
+        const isEmailValid = !emailError.textContent;
+        const isPasswordValid = !passwordError.textContent;
+        const isConfirmPasswordValid = !confirmPasswordError.textContent;
+        const isDateOfBirthValid = !dobError.textContent;
+        const isMobileNumberValid = !phone_numberError.textContent;
+
+        // Enable the submit button if all fields are valid, otherwise disable it
+        if (
+            isFirstNameValid &&
+            isLastNameValid &&
+            isEmailValid &&
+            isPasswordValid &&
+            isConfirmPasswordValid &&
+            isDateOfBirthValid &&
+            isMobileNumberValid
+        ) {
+            submitButton.removeAttribute('disabled');
+        } else {
+            submitButton.setAttribute('disabled', 'disabled');
+        }
+    }
+
+    // Attach event listeners to the input fields for real-time validation
+    fname.addEventListener("input", function () {
+        validateFirstName();
+        toggleSubmitButton();
+    });
+
+    lname.addEventListener("input", function () {
+        validateLastName();
+        toggleSubmitButton();
+    });
+
+    email.addEventListener("input", function () {
+        validateEmail();
+        toggleSubmitButton();
+    });
+
+    password.addEventListener("input", function () {
+        validatePassword();
+        toggleSubmitButton();
+    });
+
+    confirmPassword.addEventListener("input", function () {
+        validateConfirmPassword();
+        toggleSubmitButton();
+    });
+
+    dob.addEventListener("input", function () {
+        validateDateOfBirth();
+        toggleSubmitButton();
+    });
+
+    phone_number.addEventListener("input", function () {
+        validateMobileNumber();
+        toggleSubmitButton();
+    });
+
+    // Initially, disable the submit button
+    toggleSubmitButton();
+    
+</script>
+
+
+    
+
+</head>
+</html>
+

@@ -1,0 +1,264 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="">
+    <meta name="viewport"
+          content="width=device-width, height=device-height, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+    <title>Soccer Club</title>
+    <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}">
+    <link rel="stylesheet" href="{% static 'css/vendor.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/layerslider.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <script src="{% static 'js/vendor/modernizr.js' %}"></script>
+
+    <title>{{ turf.turf_name }} Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f2f2f2;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+
+        footer {
+            height: 50px;
+  
+            font-family: Arial, sans-serif;
+            background-color: #220b0b;
+        }
+
+
+        .content {
+            background-color: #fff;
+            padding: 20px;
+            flex: 1; /* Push the footer to the bottom */
+        }
+
+        .turf-image-container {
+            position: relative;
+        }
+
+        .turf-image {
+            width: 100%;
+            height: 60vh; /* Adjust as needed */
+            object-fit: cover; /* Ensure the image covers the container */
+        }
+
+        .turf-item {
+            text-align: center;
+            margin: 20px;
+        }
+
+        .book-button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 20px;
+        }
+
+        .book-button:hover {
+            background-color: #0056b3;
+        }
+
+        .turf-logo {
+            width: 120px;
+            height: 120px;
+            background-color: #333;
+            border: 3px solid rgb(255, 255, 255);
+            border-radius: 50%;
+            position: absolute;
+            bottom: -45px; /* Adjust the positioning as needed */
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .turf-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        h1 {
+            font-size: 24px;
+            text-align: center;
+        }
+
+        p {
+            text-align: center;
+        }
+
+        .booking-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        label {
+            font-size: 18px;
+        }
+
+        input[type="date"] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .time-slots {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        select {
+            font-size: 16px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 100%;
+        }
+        .time-slots {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .time-slot-button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin: 10px;
+        }
+
+        .time-slot-button:hover {
+            background-color: #0056b3;
+        }
+
+    </style>
+</head>
+<body>
+    <main>
+    <div class="wrapper">
+        <header class="header-main">
+            <div class="header-upper">
+                <div class="container">
+                    <div class="row">
+                        <ul>
+                            <li><a href="{% url 'logout' %}">LOGOUT</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="header-lower clearfix">
+                <div class="container">
+                    <div class="row">
+                        <h1 class="logo"><a href="index.html"><img src="{% static 'images/logo12.png' %}" width="100"
+                                    height="100" alt="image"></a></h1>
+                        <div class="menubar">
+                            <nav class="navbar">
+                                <div class="nav-wrapper">
+                                    <div class="navbar-header">
+                                        <button type="button" class="navbar-toggle"><span class="sr-only">Toggle navigation</span>
+                                            <span class="icon-bar"></span></button>
+                                    </div>
+                                    <div class="nav-menu">
+                                        <ul class="nav navbar-nav menu-bar">
+                                            <li><a href="index.html" class="active">Home <span></span> <span></span>
+                                                    <span></span> <span></span></a></li>
+                                            <li><a href="{% url 'booking_history' %}">History <span></span> <span></span> <span></span>
+                                                    <span></span></a></li>
+                                            <li><a href="{% url 'user_profile' %}">profile<span></span> <span></span> <span></span> <span></span></a>
+                                            </li>
+
+                                            <li><a href="{% url 'contact' %}">contact <span></span> <span></span> <span></span>
+                                                    <span></span></a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </nav>
+                        </div>
+                        <div class="social"><a href="https://www.facebook.com/hilal.habeeb.1?mibextid=ZbWKwL"
+                                class="facebook"><i class="fa fa-facebook"></i></a> <a
+                                href="https://twitter.com/itobuztech" class="twitter"><i class="fa fa-twitter"></i></a>
+                            <a href="https://www.behance.net/" class="behance"><i class="fa fa-behance"></i></a></div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        </div>
+
+<br><br><br><br>
+    <div class="content">
+        <div class="turf-image-container">
+            <img class="turf-image" src="{{ turf.image.url }}" alt="Turf Image">
+            <div class="turf-logo">
+                <img src="{% static 'images/logo12.png' %}" alt="Turf Logo">
+            </div>
+        </div>
+<br><br><br>
+<div style="border: 1px solid #621e1e; border-radius: 5px; padding: 20px; margin: 10px auto; max-width: 1000px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <p><i class="fas fa-map-marker-alt"></i> {{ turf.location }}</p>
+        <p><i class="fas fa-location-arrow"></i> {{ turf.turf_name }}</p>
+        <p><i class="fas fa-rupee-sign"></i> {{ turf.price_per_hour }} /hr</p>
+        
+        
+    </div>
+    <p><strong>Sports Type:</strong> {{ turf.sports_type }}</p>
+    <p><strong>Description:</strong> {{ turf.description }}</p>
+    <p><strong>Available From:</strong> {{ turf.available_from }}</p>
+    <p><strong>Available To:</strong> {{ turf.available_to }}</p>
+</div>
+
+<div>
+    <section class="turf-booking">
+        <!-- Date and Time Selection Form -->
+        <div class="booking-container">
+            <h2>Book this Turf</h2>
+            <form id="booking-form" method="post">
+                {% csrf_token %}
+                <label for="booking-date">Select Date:</label>
+                <input type="date" id="booking-date" name="booking_date" required>
+            
+                <div class="time-slots">
+                    <label for="booking-time">Select Time Slot:</label>
+                    <select name="selected_time_slot" required>
+                        {% for time_slot in time_slots %}
+                            <option value="{{ time_slot }}">{{ time_slot }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <button id="book-now-button" class="book-button" type="submit">Book Now</button>
+            </form>
+        </div>
+    </section>
+</div>
+</main>
+<footer>
+    <p>© 2023 Turf Provider, Inc.</p>
+</footer>
+<script src="{% static 'js/vendor/vendor.js' %}"></script>
+<script src="{% static 'js/main.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,299 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Turf Provider Registration</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder@1.13.0/dist/Control.Geocoder.css" />
+    <style>
+        /* Global Styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Navigation Bar Styles */
+        .navbar {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px;
+        }
+
+        .navbar a {
+            text-decoration: none;
+            color: white;
+            margin: 0 10px;
+        }
+
+        /* Container Styles */
+        .container {
+        max-width: 900px;
+        margin: 20px auto;
+        background-color: #c1f9e2; /* Light green background color */
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+        /* Form Styles */
+        .registration-form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+        }
+
+        .form-group {
+            flex-basis: calc(50% - 15px);
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+        .form-group input[type="file"] {
+            height: 17px; /* Remove the height attribute to match other fields */
+        }
+
+        /* Map Styles */
+        #map-container {
+            width: 100%;
+            height: 300px;
+            margin-top: 20px;
+        }
+
+        /* Adjusted Styles for Alignment */
+        .form-group:last-child {
+            flex-basis: 100%;
+        }
+
+        #location-label {
+            margin-top: 10px;
+        }
+
+        /* Submit Button Style */
+        .submit-button {
+            background-color: #0c2e52;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .submit-button:hover {
+            background-color: #810000;
+        }
+        /* Additional content container */
+.additional-content {
+    background-color: #f4f4f4;
+    padding: 20px;
+    text-align: center;
+}
+
+/* Content box style */
+.content-box {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    margin: 20px;
+    display: inline-block;
+}
+
+/* Stats style */
+.stats, .benefits {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.stat, .benefit {
+    flex: 1;
+    padding: 20px;
+}
+
+.stat span {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+/* Benefits style */
+.benefit h3 {
+    font-size: 20px;
+    color: #007BFF;
+}
+
+.benefit p {
+    font-size: 16px;
+}
+
+/* Ordered list style */
+ol {
+    text-align: left;
+    padding-left: 20px;
+}
+
+ol li {
+    font-size: 16px;
+    margin: 10px;
+}
+
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <div class="navbar">
+        <a href="{% url 'index' %}">Home</a>
+        <a href="#">Contact</a>
+    </div>
+    <!-- Additional content container -->
+    <div class="additional-content">
+        <div class="content-box">
+            <h2>PARTNER WITH US</h2>
+            <div class="stats">
+                <div class="stat">
+                    <span>3000+</span>
+                    <span>Users</span>
+                </div>
+                <div class="stat">
+                    <span>800+</span>
+                    <span>Venues</span>
+                </div>
+                <div class="stat">
+                    <span>150+</span>
+                    <span>Cities</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-box">
+            <h2>Grow Your Business With Sportigo</h2>
+            <div class="benefits">
+                <div class="benefit">
+                    <h3>IMPROVE THE MANAGEMENT</h3>
+                    <p>With our manager app, venues can easily streamline bookings.</p>
+                </div>
+                <div class="benefit">
+                    <h3>INCREASE VISIBILITY</h3>
+                    <p>As the largest sports facility network in India, we increase the exposure of the venue.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-box">
+            <h2>Get Started in Easy Steps</h2>
+            <ol>
+                <li>Fill the partnership form</li>
+                <li>Get the approval email</li>
+                <li>Login with the credentials</li>
+            </ol>
+        </div>
+    </div>
+
+
+
+    <!-- Container for Registration Form and Map -->
+    <div class="container">
+        <h2>START YOUR JOURNEY WITH PLAYSPOTS</h2>
+        <h3>Partnership form</h3>
+            
+        
+<form method="post" class="registration-form" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="form-group">
+        <label for="venue_name">Venue Name:</label>
+        <input type="text" id="venue_name" name="venue_name" required>
+    </div>
+
+    <div class="form-group">
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+    </div>
+
+    <div class="form-group">
+        <label for="contact_number">Contact Number:</label>
+        <input type="text" id="contact_number" name="contact_number" required>
+    </div>
+
+    <div class="form-group">
+        <label for="document">Document (PDF):</label>
+        <input type="file" id="document" name="document" accept=".pdf" required>
+    </div>
+
+    <div class="form-group">
+        <label for="sports_type">Sports Type:</label>
+        <select id="sports_type" name="sports_type" required>
+            <option value="football">Football</option>
+            <option value="cricket">Cricket</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="address">Address:</label>
+        <textarea id="address" name="address" rows="4" required></textarea>
+    </div>
+
+    <!-- Map Container -->
+    <div id="map-container"></div>
+
+    <div class="form-group" id="location-label">
+        <label for="location">Location:</label>
+        <input type="text" id="location" name="location" required placeholder="Select from the map">
+    </div>
+
+    <!-- Submit Button -->
+    <button class="submit-button" type="submit">Submit</button>
+</form>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-control-geocoder@1.13.0/dist/Control.Geocoder.js"></script>
+    <script>
+        var map = L.map('map-container').setView([10.8505, 76.2711], 13);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+        }).addTo(map);
+
+        // Add a search control for choosing the location
+        L.Control.geocoder({
+            defaultMarkGeocode: false
+        })
+            .on('markgeocode', function(e) {
+                var location = e.geocode.center;
+                map.setView(location, 15);
+                marker.setLatLng(location);
+                document.getElementById('location').value = location.lat + ', ' + location.lng;
+            })
+            .addTo(map);
+
+        // Initialize the marker
+        var marker = L.marker([10.8505, 76.2711], {
+            draggable: true
+        }).addTo(map);
+
+        // Listen for drag events on the marker
+        marker.on('dragend', function(e) {
+            var coord = e.target.getLatLng();
+            document.getElementById('location').value = coord.lat + ', ' + coord.lng;
+        });
+
+        // Listen for map click events to set the marker
+        map.on('click', function(e) {
+            marker.setLatLng(e.latlng);
+            document.getElementById('location').value = e.latlng.lat + ', ' + e.latlng.lng;
+        });
+    </script>
+</body>
+</html>

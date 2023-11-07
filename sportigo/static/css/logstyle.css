@@ -1,0 +1,100 @@
+@import url("http://fonts.googleapis.com/css?family=Open+Sans:400italic,400,600,300,700");
+@import url("http://fonts.googleapis.com/css?family=Oswald:400,300,700");
+@import url("http://fonts.googleapis.com/css?family=Montserrat:400,700");
+@import url("https://fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,400italic,500,500italic,700,700italic,900,900italic");
+html {
+  font-family: sans-serif;
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%; }
+  body
+  {
+     margin: 0;
+     padding: 0;
+     font-family: Arial, Helvetica, sans-serif;
+     background-image: url("{% static '..\static\images\loginbg.jpg' %}"); /* Replace with your own image path */
+     background-size: cover;
+     background-position: center;
+     background-repeat: no-repeat;
+ }
+
+ .signup-container {
+     max-width: 550px;
+     margin: 0 auto;
+     padding: 20px;
+     background-color: rgba(255, 255, 255, 0.5);
+     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+     border-radius: 5px;
+     text-align: center;
+ }
+ label {
+     display: block;
+     text-align: left;
+     margin-left:10%;
+     margin-bottom: 5px; /* Optional: Add margin for spacing */
+ }
+
+ .signup-container h2 {
+     margin-bottom: 20px;
+     color: #333;
+ }
+
+ .form-group {
+     margin-bottom: 20px;
+ }
+
+ .form-group label {
+     display: block;
+     font-weight: bold;
+     margin-bottom: 5px;
+ }
+
+ .form-group input {
+     width: 80%;
+     padding: 12px;
+     margin-bottom: 10px;
+     border: 1px solid #ccc;
+     border-radius: 5px;
+ }
+
+ .error-message {
+     color: #e74c3c;
+     margin-top: 5px;
+     font-size: 12px;
+ }
+
+ .success-message {
+     color: #27ae60;
+     margin-top: 5px;
+     font-size: 12px;
+ }
+
+ .submit-btn {
+     background-color: #333;
+     color: #fff;
+     border: none;
+     border-radius: 5px;
+     padding: 15px 20px;
+     cursor: pointer;
+ }
+
+ @media (max-width: 768px) {
+     .signup-container {
+         max-width: 90%;
+     }
+
+     .form-group input {
+         padding: 10px;
+     }
+ }
+ select {
+     width: 85%;
+     padding: 12px;
+     margin-bottom: 10px;
+     border: 1px solid #ccc;
+     border-radius: 5px;
+ }
+
+ /* Style the select element when focused */
+ select:focus {
+     border-color: #007BFF; /* Change border color on focus */
+ }

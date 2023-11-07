@@ -1,0 +1,267 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Turf</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f2f2f2;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+    
+            header {
+                background-color: #333;
+                color: white;
+                padding: 20px 0;
+                text-align: center;
+            }
+            nav {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 20px 0;
+            }
+            
+            nav ul li {
+                display: inline;
+                margin-right: 20px;
+                border: none; /* Remove the border */
+                background: none; /* Remove background color */
+            }
+    
+            /* Add this CSS to change the height of the navbar */
+            nav {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 10px 0; /* Change the top and bottom padding */
+                background-color: #333; /* Add background color */
+            }
+    
+            ul {
+                list-style: none;
+                padding: 0;
+            }
+    
+            ul.right {
+                margin-left: auto; /* Push the "Logout" list to the right */
+            }
+    
+            li {
+                display: inline;
+                margin-right: 20px;
+            }
+    
+            a {
+                color: white;
+                text-decoration: none;
+            }
+    
+    
+            main {
+                background-color: #fff;
+                padding: 20px;
+                border-radius: 5px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                flex: 1; /* Push the footer to the bottom */
+            }
+    
+            h1 {
+                font-size: 24px;
+                text-align: center;
+            }
+    
+            section {
+                margin-top: 20px;
+            }
+    
+            .stat {
+                text-align: center;
+                padding: 20px;
+                background-color: #007bff;
+                color: white;
+                border-radius: 5px;
+                margin: 5px;
+                display: inline-block;
+            }
+    
+            ul {
+                list-style: none;
+                padding: 0;
+            }
+            ul.right {
+                margin-left: auto; /* Push the "Logout" list to the right */
+            }
+    
+            li {
+                border: 1px solid #ddd;
+                padding: 20px;
+                margin: 20px 0;
+                border-radius: 5px;
+            }
+    
+            li h3 {
+                font-size: 20px;
+                color: #333;
+            }
+    
+            footer {
+                text-align: center;
+                background-color: #333;
+                color: white;
+                padding: 20px 0;
+            }
+    
+            .button {
+                background-color: #007bff;
+                color: white;
+                border: none;
+                padding: 10px 20px;
+                border-radius: 5px;
+                cursor: pointer;
+            }
+    
+            .button:hover {
+                background-color: #0056b3;
+            }
+    
+            .container {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: space-between;
+       
+            }
+    
+    
+    
+            form {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: LightGray;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+    
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+    
+        input, textarea {
+            width: 90%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+    
+        select {
+            height: 40px;
+            width: 95%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+    
+        .column {
+            width: 45%;
+            display: inline-block;
+            margin-right: 5%;
+        }
+    
+        .column:last-child {
+            margin-right: 0;
+        }
+    
+        .checkbox {
+            display: inline;
+            margin-right: 10px;
+        }
+    
+        input[type="submit"] {
+            background-color: #0b2137;
+            color: #fff;
+            width: 100%;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    
+        input[type="submit"]:hover {
+            background-color: #1c3957;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <header>
+        <nav>
+            <ul>
+                <li><a href="{% url 'providerhome' %}">Dashboard</a></li>
+            </ul>
+            <ul class="right">
+                <li><a href="{% url 'logout' %}">Logout</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <h2>Manage Turf</h2>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="container">
+                <div class="column">
+                    <label for="turf_name">Turf Name:</label>
+                    <input type="text" name="turf_name" id="turf_name" value="{{ turf.turf_name }}" required>
+
+                    <label for="sports_type">Sports Type:</label>
+                    <select name="sports_type" id="sports_type">
+                        <option value="football" {% if turf.sports_type == 'football' %}selected{% endif %}>Football</option>
+                        <option value="cricket" {% if turf.sports_type == 'cricket' %}selected{% endif %}>Cricket</option>
+                    </select>
+
+                    <label for="price_per_hour">Price per Hour:</label>
+                    <input type="number" name="price_per_hour" id="price_per_hour" step="0.01" value="{{ turf.price_per_hour }}" required>
+
+                    <label for="available_from">Available From:</label>
+                    <input type="time" name="available_from" id="available_from" value="{{ turf.available_from|time:'H:i' }}" required>
+                </div>
+
+                <div class="column">
+                    <label for="description">Description:</label>
+                    <textarea name="description" id="description" rows="4" required>{{ turf.description }}</textarea>
+
+                    <label for="location">Location:</label>
+                    <input type="text" name="location" id="location" value="{{ turf.location }}" required>
+                    <br><br>
+                    <label for="available_to">Available To:</label>
+                    <input type="time" name="available_to" id="available_to" value="{{ turf.available_to|time:'H:i' }}" required>
+
+                    <label for="image">Turf Image:</label>
+                    <input type="file" name="image" id="image" accept="image/*">
+                </div>
+            </div>
+
+            <input type="submit" value="Update Turf">
+        </form>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2023 Turf Provider, Inc.</p>
+    </footer>
+</body>
+</html>

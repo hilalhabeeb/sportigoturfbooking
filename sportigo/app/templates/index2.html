@@ -1,0 +1,241 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html class="no-js" lang="">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="">
+    <meta name="viewport"
+          content="width=device-width, height=device-height, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+    <title>Soccer Club</title>
+    <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}">
+    <link rel="stylesheet" href="{% static 'css/vendor.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/layerslider.css' %}">
+    <script src="{% static 'js/vendor/modernizr.js' %}"></script>
+    <style>
+        /* Apply background image to the entire page */
+
+    
+    
+    .turf-booking {
+        padding: 40px 0;
+        background-color: #f5f5f5;
+    }
+
+    .turf-booking h2 {
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+
+    .turf-booking .turf-list {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+
+    .turf-booking .turf-item {
+        width: calc(33.33% - 20px);
+        margin-bottom: 20px;
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        padding: 20px;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .turf-booking .turf-item img {
+        max-width: auto;
+        height: 200px;
+    }
+
+    .turf-booking .booking-form {
+        margin-top: 20px;
+        padding: 20px;
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .turf-booking .booking-form label {
+        display: block;
+        margin-bottom: 10px;
+    }
+
+    .turf-booking .booking-form input[type="text"],
+    .turf-booking .booking-form input[type="date"],
+    .turf-booking .booking-form input[type="time"] {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+    }
+
+    /* .turf-booking .booking-form button {
+        display: inline-block;
+        background-color: #333;
+        color: #fff;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    } */
+    .book-button {
+    display: inline-block;
+    padding: 8px 15px;
+    background-color: #1f3144; /* Choose your desired background color */
+    color: #e4d6d6; /* Text color */
+    text-decoration: none; /* Remove underlines from links */
+    border-radius: 10px;
+    transition: background-color 0.3s ease; /* Add a hover effect */
+}
+
+.book-button:hover {
+    background-color: rgb(206, 75, 5); /* Change background color on hover */
+}
+
+    /* Adjust the height of the header/navbar */
+    .header-upper {
+        height: 50px; /* Change the height to your desired value */
+    }
+
+    .header-lower {
+        height: 90px; /* Change the height to your desired value */
+    }
+</style>
+</head>
+<body>
+<div class="wrapper">
+    <header class="header-main">
+        <div class="header-upper">
+            <div class="container">
+                <div class="row">
+                    <ul>
+                        <li><a href="{% url 'logout' %}">LOGOUT</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="header-lower clearfix">
+            <div class="container">
+                <div class="row">
+                    <h1 class="logo"><a href="index.html"><img src="{% static 'images/logo12.png' %}" width="190"
+                                height="190" alt="image"></a></h1>
+                    <div class="menubar">
+                        <nav class="navbar">
+                            <div class="nav-wrapper">
+                                <div class="navbar-header">
+                                    <button type="button" class="navbar-toggle"><span class="sr-only">Toggle navigation</span>
+                                        <span class="icon-bar"></span></button>
+                                </div>
+                                <div class="nav-menu">
+                                    <ul class="nav navbar-nav menu-bar">
+                                        <li><a href="#" class="active">Home <span></span> <span></span>
+                                                <span></span> <span></span></a></li>
+                                        <li><a href="{% url 'booking_history' %}">History <span></span> <span></span> <span></span>
+                                                <span></span></a></li>
+                                        <li><a href="{% url 'user_profile' %}">profile<span></span> <span></span> <span></span> <span></span></a>
+                                        </li>
+                                        <li><a href="bookTicket.html">book Tickets <span></span> <span></span>
+                                                <span></span> <span></span></a></li>
+                                        <li><a href="{% url 'contact' %}">contact <span></span> <span></span> <span></span>
+                                                <span></span></a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </nav>
+                    </div>
+                    <div class="social"><a href="https://www.facebook.com/hilal.habeeb.1?mibextid=ZbWKwL"
+                            class="facebook"><i class="fa fa-facebook"></i></a> <a
+                            href="https://twitter.com/itobuztech" class="twitter"><i class="fa fa-twitter"></i></a>
+                        <a href="https://www.behance.net/" class="behance"><i class="fa fa-behance"></i></a></div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <br><br1><br><br><br><br><br>
+        <section class="search-section">
+            <div class="container">
+                <h2>Search for Turfs</h2>
+                <form id="search-form">
+                    <div class="input-group mb-3">
+                        <input type="text" id="search-input" class="form-control" placeholder="Search by turf name or location" />
+                        <button type="submit" class="btn btn-primary">Search</button>
+                    </div>
+                </form>
+                <div id="search-results">
+                    <!-- Display search results here -->
+                </div>
+            </div>
+        </section>
+    <!-- Turf Booking section -->
+    <section class="turf-booking">
+        <div class="container">
+            <h2>Available Turfs for Booking</h2>
+            <div class="turf-list">
+                {% for turf in available_turfs %}
+                    <div class="turf-item">
+                        <img src="{{ turf.image.url }}" alt="{{ turf.turf_name }}">
+                        <h3>{{ turf.turf_name }}</h3>
+                        <p>Location: {{ turf.location }}</p>
+                        <p>Price: ₹{{ turf.price_per_hour }}/hr</p>
+                        <a href="{% url 'turf_detail' turf.id %}" class="book-button">View Turf</a>
+                    </div>
+                {% empty %}
+                    <p>No turfs available for booking.</p>
+                {% endfor %}
+            </div>
+
+            <!-- Booking Form -->
+            <div class="booking-form">
+                <h2>Book a Turf</h2>
+                <form action="#" method="post">
+                    <label for="turf">Select Turf:</label>
+                    <select name="turf" id="turf">
+                        <option value="turf1">Turf 1</option>
+                        <option value="turf2">Turf 2</option>
+                        <option value="turf3">Turf 3</option>
+                    </select>
+                    <label for="date">Date:</label>
+                    <input type="date" id="date" name="date" required>
+                    <label for="time">Time:</label>
+                    <input type="time" id="time" name="time" required>
+                    <button type="submit">Book</button>
+                </form>
+            </div>
+        </div>
+    </section>
+</div>
+<script src="{% static 'js/vendor/vendor.js' %}"></script>
+<script src="{% static 'js/main.js' %}"></script>
+<script>
+    $(document).ready(function () {
+        $('#search-form').submit(function (e) {
+            e.preventDefault(); // Prevent the default form submission
+        });
+
+        $('#search-input').on('input', function () {
+            var query = $(this).val();
+            var searchUrl = '/search/'; // Replace 'search' with the actual URL name for your search view
+
+            $.ajax({
+                url: searchUrl,
+                data: { query: query },
+                dataType: 'json',
+                success: function (data) {
+                    var resultsHtml = '';
+                    for (var i = 0; i < data.length; i++) {
+                        var turfName = data[i].turf_name;
+                        var location = data[i].location;
+                        resultsHtml += '<p>Turf Name: ' + turfName + '</p><p>Location: ' + location + '</p>';
+                    }
+                    $('#search-results').html(resultsHtml);
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>
