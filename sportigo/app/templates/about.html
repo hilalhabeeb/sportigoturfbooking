@@ -29,7 +29,8 @@
         </div>
         <div class="header-lower clearfix">
             <div class=container>
-                <div class=row><h1 class=logo><a href=index.html><img src="{% static 'images/logo.png' %}" alt=image></a></h1>
+                <div class=row><h1 class=logo><a href=index.html><img src="{% static 'images/logo12.png' %}" width="190" height="190" alt=image></a></h1>
+
 
                     <div class=menubar>
                         <nav class=navbar>
@@ -40,35 +41,17 @@
                                 </div>
                                 <div class=nav-menu>
                                     <ul class="nav navbar-nav menu-bar">
-                                        <li><a href=index-2.html>Home <span></span> <span></span> <span></span>
+                                        <li><a href="{% url 'index' %}">Home <span></span> <span></span> <span></span>
                                             <span></span></a></li>
-                                        <li><a href=about.html class=active>about <span></span> <span></span>
+                                        <li><a href=# class=active>about <span></span> <span></span>
                                             <span></span> <span></span></a></li>
-                                        <li><a>gallery <span></span> <span></span> <span></span> <span></span></a>
-                                            <ul class=sub-menu>
-                                                <li><a href=gallerypage01.html>masonry</a></li>
-                                                <li><a href=gallery02.html>gallery column two</a></li>
-                                                <li><a href=gallery03.html>gallery column 03</a></li>
-                                            </ul>
-                                        </li>
-                                        <li><a href=blog.html>blog <span></span> <span></span> <span></span>
-                                            <span></span></a></li>
-                                        <li><a href=bookTicket.html>book Tickets <span></span> <span></span>
+
+                                        <li><a href="{% url 'user_login' %}">book Tickets <span></span> <span></span>
                                             <span></span> <span></span></a></li>
-                                        <li><a href=shop.html>shop <span></span> <span></span> <span></span>
+
+                                        <li><a href="{% url 'contact' %}">contact <span></span> <span></span> <span></span>
                                             <span></span></a></li>
-                                        <li><a href=contact.html>contact <span></span> <span></span> <span></span>
-                                            <span></span></a></li>
-                                        <li><a>error <span></span> <span></span> <span></span> <span></span></a>
-                                            <ul class=sub-menu>
-                                                <li><a href=400.html>400 page</a></li>
-                                                <li><a href=401.html>401 page</a></li>
-                                                <li><a href=403.html>403 page</a></li>
-                                                <li><a href=404.html>404 page</a></li>
-                                                <li><a href=500.html>500 page</a></li>
-                                                <li><a href=503.html>503 page</a></li>
-                                            </ul>
-                                        </li>
+
                                     </ul>
                                 </div>
                             </div>
@@ -84,7 +67,7 @@
     </header>
     
     <div class=innerbannerwrap>
-        <div class=innerbanner><h2 class=bannerHeadline>about <span>us</span></h2></div>
+        <div class=innerbanner><h2 class=bannerHeadline style="color: black;">about <span>us</span></h2></div>
     </div>
     <section class="matchSchedule countryclub">
         <div class=container>

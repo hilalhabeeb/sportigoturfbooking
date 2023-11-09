@@ -6,3 +6,4 @@ from .models import *
 admin.site.register(Usertable)
 admin.site.register(TurfProvider)
 admin.site.register(TurfListing)
+admin.site.register(Booking)

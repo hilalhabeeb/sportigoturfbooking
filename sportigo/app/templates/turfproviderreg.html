@@ -295,5 +295,89 @@ ol li {
             document.getElementById('location').value = e.latlng.lat + ', ' + e.latlng.lng;
         });
     </script>
+    <script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Get all input elements
+    var inputs = document.querySelectorAll('input, select, textarea');
+
+    // Loop through each input element
+    inputs.forEach(function(input) {
+        // Add event listener for 'input' event
+        input.addEventListener('input', function() {
+            // Validate the current input field
+            validateField(this);
+        });
+    });
+});
+
+function validateField(field) {
+    // Check if the field is empty
+    if (field.value.trim() === '') {
+        showError(field, 'This field is required.');
+    } else {
+        clearError(field);
+    }
+
+    // Additional validation for specific field types
+    switch (field.type) {
+        case 'email':
+            // Simple pattern for email validation
+            var emailPattern = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+            if (!emailPattern.test(field.value)) {
+                showError(field, 'Please enter a valid email address.');
+            }
+            break;
+        case 'file':
+            // Check if the file type is PDF
+            var file = field.files[0];
+            if (file && file.type !== 'application/pdf') {
+                showError(field, 'Only PDF files are allowed.');
+            }
+            break;
+    }
+
+    // Additional validation for specific field ids
+    switch (field.id) {
+        case 'venue_name':
+            // Check if the venue name contains special characters
+            var venueNamePattern = /^[a-zA-Z0-9 ]*$/;
+            if (!venueNamePattern.test(field.value)) {
+                showError(field, 'The venue name should not contain special characters.');
+            }
+            break;
+        case 'contact_number':
+            // Check if the contact number is a 10-digit number starting with 6, 7, 8, or 9
+            var contactNumberPattern = /^[6-9][0-9]{9}$/;
+            if (!contactNumberPattern.test(field.value)) {
+                showError(field, 'The contact number should be a 10-digit number and the first digit must be a digit from 6 to 9.');
+            }
+            break;
+    }
+}
+
+function showError(field, message) {
+    // Get the error message element or create a new one
+    var error = field.parentNode.querySelector('.error-message');
+    if (!error) {
+        error = document.createElement('div');
+        error.className = 'error-message';
+        field.parentNode.appendChild(error);
+    }
+
+    // Show the error message
+    error.textContent = message;
+    field.classList.add('error');
+}
+
+function clearError(field) {
+    // Remove the error message and the error class
+    var error = field.parentNode.querySelector('.error-message');
+    if (error) {
+        error.remove();
+    }
+    field.classList.remove('error');
+}
+
+    </script>
 </body>
 </html>

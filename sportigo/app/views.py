@@ -158,6 +158,56 @@ def provider_update(request):
 
     return render(request, 'providerupdate.html', context)
 
+# def providerhome(request):
+#     if 'email' in request.session:
+#         # Retrieve the TurfProvider object for the authenticated provider
+#         provider = TurfProvider.objects.get(email=request.session['email'])
+        
+#         # Retrieve the list of turfs associated with the provider
+#         your_turfs = TurfListing.objects.filter(turf_provider=provider)
+        
+#         context = {
+#             'provider_name': provider.venue_name,
+#             'your_turfs': your_turfs  # Pass the list of turfs to the template
+            
+#         }
+
+#         response = render(request, 'providerhome.html', context)
+#         response['Cache-Control'] = 'no-store, must-revalidate'
+#         return response
+        
+#     else:
+#         return redirect('index')
+
+from .models import Booking  # Import the Booking model
+
+# def providerhome(request):
+#     if 'email' in request.session:
+#         # Retrieve the TurfProvider object for the authenticated provider
+#         provider = TurfProvider.objects.get(email=request.session['email'])
+        
+#         # Retrieve the list of turfs associated with the provider
+#         your_turfs = TurfListing.objects.filter(turf_provider=provider)
+
+#         # Retrieve booking details for the provider's turfs
+#         bookings = Booking.objects.filter(turf_listing__in=your_turfs)
+        
+#         context = {
+#             'provider_name': provider.venue_name,
+#             'your_turfs': your_turfs,  # Pass the list of turfs to the template
+#             'bookings': bookings  # Pass the list of booking details to the template
+#         }
+
+#         response = render(request, 'providerhome.html', context)
+#         response['Cache-Control'] = 'no-store, must-revalidate'
+#         return response
+        
+#     else:
+#         return redirect('index')
+    
+
+
+
 def providerhome(request):
     if 'email' in request.session:
         # Retrieve the TurfProvider object for the authenticated provider
@@ -165,11 +215,18 @@ def providerhome(request):
         
         # Retrieve the list of turfs associated with the provider
         your_turfs = TurfListing.objects.filter(turf_provider=provider)
+
+        # Get the count of the provider's turfs
+        turf_count = your_turfs.count()
+
+        # Retrieve booking details for the provider's turfs
+        bookings = Booking.objects.filter(turf_listing__in=your_turfs)
         
         context = {
             'provider_name': provider.venue_name,
-            'your_turfs': your_turfs  # Pass the list of turfs to the template
-            
+            'your_turfs': your_turfs,  # Pass the list of turfs to the template
+            'turf_count': turf_count,  # Pass the count of turfs to the template
+            'bookings': bookings  # Pass the list of booking details to the template
         }
 
         response = render(request, 'providerhome.html', context)
@@ -181,8 +238,9 @@ def providerhome(request):
 
 
 
+
 def userLogout(request):
-    logout(request)
+    logout(request) 
     return redirect('index')
 
 def index2(request):
@@ -472,31 +530,48 @@ from datetime import datetime, timedelta
 from django.shortcuts import render, HttpResponseRedirect
 from .models import TurfListing
 
+
+from django.db.models import Q
+
 @login_required
 def turf_detail(request, turf_id):
     if request.method == 'POST':
-        # Get the selected time slot from the form
+        # Get the selected time slot and date from the form
         selected_time_slot = request.POST.get('selected_time_slot')
+        selected_date = request.POST.get('booking_date')
 
-        if not selected_time_slot:
-            return HttpResponse("Please select a time slot")
+        if not selected_time_slot or not selected_date:
+            return HttpResponse("Please select a date and time slot")
 
         # Split the time slot into start and end times
         start_time_str, end_time_str = selected_time_slot.split(' - ')
         start_time = datetime.strptime(start_time_str, '%H:%M').time()
         end_time = datetime.strptime(end_time_str, '%H:%M').time()
         turf = TurfListing.objects.get(id=turf_id)
-        total_cost = (end_time.hour - start_time.hour) * turf.price_per_hour
-
+        total_cost = ((end_time.hour - start_time.hour)+1) * turf.price_per_hour
 
         user = request.user
+
+        # Check if there are existing bookings for the selected date and time slot
+        existing_bookings = Booking.objects.filter(
+            Q(booking_date=selected_date),
+            Q(start_time__lte=start_time, end_time__gte=start_time) |
+            Q(start_time__lte=end_time, end_time__gte=end_time)
+        )
+
+        if existing_bookings.exists():
+            # Notify the user that the slot is already booked
+            messages.error(request, 'This time slot is already booked. Please choose another time.')
+
+            # You can redirect the user back to the same page or provide a list of available time slots.
+            return redirect('turf_detail', turf_id=turf_id)
 
         # Create a new booking
         booking = Booking.objects.create(
             user=user,
             turf_listing=turf,
             turf_provider=turf.turf_provider,
-            booking_date=request.POST.get('booking_date'),
+            booking_date=selected_date,
             start_time=start_time,
             end_time=end_time,
             total_cost=total_cost
@@ -513,7 +588,7 @@ def turf_detail(request, turf_id):
 
     while available_from < available_to:
         time_slots.append(
-            available_from.strftime('%H:%M') + ' - ' + (datetime.combine(datetime.today(), available_from) + timedelta(hours=1)).strftime('%H:%M')
+            available_from.strftime('%H:%M') + ' - ' + (datetime.combine(datetime.today(), available_from) + timedelta(minutes=59)).strftime('%H:%M')
         )
         available_from = (datetime.combine(datetime.today(), available_from) + timedelta(hours=1)).time()
 
@@ -529,20 +604,19 @@ def turf_detail(request, turf_id):
 
 from django.contrib import messages
 
+@login_required
 def booking_history(request):
     # Retrieve the user's booking history
     user_bookings = Booking.objects.filter(user=request.user).order_by('-created_at')
-
-    # Retrieve messages
     messages_list = messages.get_messages(request)
-
-    # Pass the bookings and messages to the template
     context = {
         'user_bookings': user_bookings,
         'messages': messages_list
     }
 
     return render(request, 'booking_history.html', context)
+
+
 
 def manage_turf(request, turf_id):
     # Get the existing turf instance
@@ -596,30 +670,6 @@ def search(request):
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-#before showing turf details in providerhome
-# def providerhome(request):
-#     if 'email' in request.session:
-#         # Retrieve the TurfProvider object for the authenticated provider
-#         provider = TurfProvider.objects.get(email=request.session['email'])
-#         context = {
-#             'provider_name': provider.venue_name  # Pass the venue name to the template
-#         }
-#         return render(request, 'providerhome.html', context)
-#     else:
-#         return redirect('index')
 
 
 

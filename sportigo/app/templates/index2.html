@@ -209,8 +209,7 @@
                                                 <span></span></a></li>
                                         <li><a href="{% url 'user_profile' %}">profile<span></span> <span></span> <span></span> <span></span></a>
                                         </li>
-                                        <li><a href="bookTicket.html">book Tickets <span></span> <span></span>
-                                                <span></span> <span></span></a></li>
+
                                         <li><a href="{% url 'contact' %}">contact <span></span> <span></span> <span></span>
                                                 <span></span></a></li>
                                     </ul>
@@ -263,19 +262,20 @@
 
             <!-- Booking Form -->
             <div class="booking-form">
-                <h2>Book a Turf</h2>
+                <h2>Filter a Turf</h2>
                 <form action="#" method="post">
-                    <label for="turf">Select Turf:</label>
+                    <label for="turf">Sport Type</label>
                     <select name="turf" id="turf">
-                        <option value="turf1">Turf 1</option>
-                        <option value="turf2">Turf 2</option>
-                        <option value="turf3">Turf 3</option>
+                        <option value="turf1">Football</option>
+                        <option value="turf2">Cricket</option>
                     </select>
+                    <label for="text">Location:</label>
+                    <input type="text" id="location" name="location" required>
                     <label for="date">Date:</label>
                     <input type="date" id="date" name="date" required>
                     <label for="time">Time:</label>
                     <input type="time" id="time" name="time" required>
-                    <button type="submit">Book</button>
+                    <button type="submit">Filter</button>
                 </form>
             </div>
         </div>

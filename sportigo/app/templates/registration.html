@@ -291,9 +291,10 @@
     }
 
     // Function to validate Email
-function validateEmail() {
+    function validateEmail() {
     var emailValue = email.value.trim();
-    var emailRegex = /^(?!.*\.{2,})(?!.*@{2,})[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+    // This regular expression checks if the email address is a valid Gmail or Yahoo address
+    var emailRegex = /^(?!.*\.{2,})(?!.*@{2,})[A-Za-z0-9._%+-]+@(gmail\.com|yahoo\.com|ajce\.in|outlook\.com)$/;
 
     if (!emailRegex.test(emailValue) || emailValue.indexOf('.') < emailValue.indexOf('@')) {
         emailError.textContent = "Please enter a valid email address.";
@@ -302,6 +303,7 @@ function validateEmail() {
         emailvalid();
     }
 }
+
 
 function emailvalid() {
     var emailValue = email.value.trim();
@@ -347,16 +349,28 @@ function emailvalid() {
         }
     }
 
-    // Function to validate Confirm Password
     function validateConfirmPassword() {
-        var confirmPasswordValue = confirmPassword.value;
-        var passwordValue = password.value;
-        if (confirmPasswordValue !== passwordValue) {
-            confirmPasswordError.textContent = "Passwords do not match.";
-        } else {
-            confirmPasswordError.textContent = "";
-        }
+    var confirmPasswordValue = confirmPassword.value;
+    var passwordValue = password.value;
+
+    if (passwordValue !== previousPasswordValue) {
+        confirmPassword.value = ""; // Clear Confirm Password if New Password changes
     }
+
+    if (confirmPasswordValue !== passwordValue) {
+        confirmPasswordError.textContent = "Passwords do not match.";
+    } else {
+        confirmPasswordError.textContent = "";
+    }
+
+    previousPasswordValue = passwordValue; // Store the current password value for the next comparison
+}
+
+// Initialize a variable to store the previous password value
+var previousPasswordValue = "";
+
+// Add an event listener to the New Password field to trigger the validation
+password.addEventListener("input", validateConfirmPassword);
 
     // Function to validate Date of Birth
     function validateDateOfBirth() {

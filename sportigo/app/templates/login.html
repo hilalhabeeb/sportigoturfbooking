@@ -7,6 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <style>
+        
+        @import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
         body {
             font-family: Arial, sans-serif;
             background-image: url("{% static '..\static\images\loginbg.jpg' %}");
@@ -17,25 +19,44 @@
 
         /* Stylish navigation bar */
         .navbar {
-            background-color: #333;
+            background-color: #333; /* Background color of the navbar */
             overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 10px;
+            font-family: 'Times New Roman', serif;
+            font-weight: bold;
         }
 
         .navbar a {
+            float: right;
+            display: block;
             color: white;
             text-align: center;
-            padding: 14px 16px;
+            padding: 10px 11px; /* Spacing for the links */
             text-decoration: none;
+        }
+        .navbar a:hover {
+            background-color: #ddd; /* Background color on hover */
+            color: #333;
         }
 
         /* Stylish logo placeholder */
         .logo img {
             width: 80px;
             height: auto;
+        }
+        .logo {
+            float: left;
+            
+        }
+        .navbar::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
+        .website-name {
+            color: white;
+            font-size: 20px; /* Adjust font size */
+            font-weight: bold;
+            text-align: center;
         }
 
         /* Stylish registration form */
@@ -100,25 +121,29 @@
             color: #555;
         }
         
-        .navbar-text {
-            color: white;
-            font-size: 15px;
-            font-weight: bold;
-            margin-left: 10px;
-        }
+
     </style>
 </head>
 <body>
     
     <!-- Stylish navbar with logo -->
-    <div class="navbar">
-        <div class="logo">
-            <!-- Add your logo here -->
-            <a href="{% url 'index' %}"><img src="{% static 'images/logo1.png' %}" alt="Your Logo" ></a>
+
+
+        <div class="navbar">
+            <div class="logo">
+                <!-- Add your logo here -->
+                <img src="{% static 'images/logo1.png' %}" alt="Your Logo" width="90" height="90">
+            </div>
+            <div class="website-name">
+                <br>
+                Welcome to Sportigo ! 
+            </div>
+            <a href="{% url 'index' %}">Home</a>
+            <a href="{% url 'about' %}">About us</a>
+            <!-- Add more links as needed -->
         </div>
-        <div class="navbar-text">
-            Welcome to Sportigo, the play spot!
-        </div>
+
+
     </div>
 
     <!-- Stylish login form -->

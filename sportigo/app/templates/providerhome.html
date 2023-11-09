@@ -14,65 +14,53 @@
         }
 
         header {
-    background-color: #333;
-    color: #fff;
-    display: flex;
-    justify-content: space-between;
-    padding: 10px 20px;
-    align-items: center;
-}
+            background-color: #333;
+            color: #fff;
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 20px;
+            align-items: center;
+        }
 
-.header .logo h1 {
-    font-size: 24px;
-}
+        .header .logo h1 {
+            font-size: 24px;
+        }
 
-.header .user-profile {
-    display: flex;
-    align-items: center;
-}
+        .header .user-profile {
+            display: flex;
+            align-items: center;
+        }
 
-.header .user-profile img {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    margin-right: 10px;
-}
+        .header .user-profile img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
 
-.header .user-profile a {
-    color: #fff;
-    text-decoration: none;
-    margin-left: 10px;
-}
+        .header .user-profile a {
+            color: #fff;
+            text-decoration: none;
+            margin-left: 10px;
+        }
 
-/* Style the navigation menu */
-nav ul {
-    list-style: none;
-}
+        nav ul {
+            list-style: none;
+        }
 
+        nav ul li {
+            display: inline;
+        }
 
-nav ul li {
-    margin: 0;
-    padding: 0;
-    display: inline;
-}
-nav p {
-    display: inline-block;
-    text-decoration: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    margin-right: 10px;
-}
-
-nav ul li a {
-    display: inline-block;
-    text-decoration: none;
-    padding: 10px 20px;
-    color: #333;
-    background-color: #eee;
-    border-radius: 5px;
-    margin-right: 10px;
-}
-
+        nav ul li a {
+            display: inline-block;
+            text-decoration: none;
+            padding: 10px 20px;
+            color: #333;
+            background-color: #eee;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
 
         main {
             background-color: #fff;
@@ -86,10 +74,6 @@ nav ul li a {
             text-align: center;
         }
 
-        section {
-            margin-top: 20px;
-        }
-
         .stat {
             text-align: center;
             padding: 20px;
@@ -100,204 +84,158 @@ nav ul li a {
             display: inline-block;
         }
 
-        ul {
-            list-style: none;
-            padding: 0;
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
         }
 
-        li {
-            border: 1px solid #ddd;
-            padding: 20px;
+        /* Additional styles for your dashboard */
+
+        /* Quick Stats section */
+        #quick-stats {
+            display: flex;
+            justify-content: space-around;
             margin: 20px 0;
+        }
+
+        /* Your Turf Listings section */
+        #turf-listings {
+            margin-top: 20px;
+        }
+
+        .turf-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .turf-item {
+            width: calc(33.33% - 20px);
+            margin-bottom: 20px;
+            background-color: #fff;
+            border: 1px solid #ddd;
             border-radius: 5px;
+            padding: 20px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
         }
 
-        li h3 {
-            font-size: 20px;
-            color: #333;
+        .turf-item img {
+            max-width: 100%;
+            height: auto;
         }
 
+        /* Booking Requests section */
+        #booking {
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+
+        /* Footer */
         footer {
             text-align: center;
             background-color: #333;
             color: white;
             padding: 20px 0;
         }
-
-        .button {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .button:hover {
-            background-color: #0056b3;
-        }
-
-        .container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-        }
-        .turf-booking {
-        padding: 40px 0;
-        background-color: #f5f5f5;
-    }
-
-    .turf-booking h2 {
-        font-size: 24px;
-        margin-bottom: 20px;
-    }
-
-    .turf-booking .turf-list {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-between;
-    }
-
-    .turf-booking .turf-item {
-        width: calc(33.33% - 20px);
-        margin-bottom: 20px;
-        background-color: #fff;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        padding: 20px;
-        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-    }
-
-    .turf-booking .turf-item img {
-        max-width: 100%;
-        height: auto;
-    }
-
-    .turf-booking .booking-form {
-        margin-top: 20px;
-        padding: 20px;
-        background-color: #fff;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-    }
-
-    .turf-booking .booking-form label {
-        display: block;
-        margin-bottom: 10px;
-    }
-
-    .turf-booking .booking-form input[type="text"],
-    .turf-booking .booking-form input[type="date"],
-    .turf-booking .booking-form input[type="time"] {
-        width: 100%;
-        padding: 10px;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-    }
-
-    .turf-booking .booking-form button {
-        display: inline-block;
-        background-color: #333;
-        color: #fff;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-    }
-
-    /* Adjust the height of the header/navbar */
-    .header-upper {
-        height: 50px; /* Change the height to your desired value */
-    }
-
-    .header-lower {
-        height: 90px; /* Change the height to your desired value */
-    }
-
-
     </style>
 </head>
 <body>
     <!-- Navigation Bar -->
-
+    
     <header>
         <div class="logo">
             <h1>Sportigo Turf Provider</h1>
         </div>
         <div class="user-profile">
             <p><img src="{% static 'images/avatar.png' %}" width="50" height="50"  alt="User Avatar"></p>
-
-            <a href="{% url 'logout' %}">Logout</a>
+            <a href="{% url 'logout' %}" style="color: #ddd;">Logout</a>
         </div>
     </header>
-
-        <nav>
-            <ul>
-                <li><a href="#">Dashboard</a></li>
-                <li><a href="{% url 'add_turf' %}">Add Turf</a></li>
-                <li><a href="{% url 'provider_update' %}">Update Password</a></li>
-
     
-
-            </ul>
-        </nav>
-
-
+    <nav>
+        <ul>
+            <li><a href="#">Dashboard</a></li>
+            <li><a href="{% url 'add_turf' %}">Add Turf</a></li>
+            <li><a href="{% url 'provider_update' %}">Update Password</a></li>
+        </ul>
+    </nav>
 
     <!-- Main Content -->
     <main>
         <h1>Welcome, {{ provider_name }}</h1>
         
-        <!-- Quick Stats -->
-        <section id="quick-stats">
-            <div class="stat">
-                <h2>Total Turfs</h2>
-                <p>[Total Turf Count]</p>
-            </div>
-            <div class="stat">
-                <h2>Bookings Today</h2>
-                <p>[Bookings Today]</p>
-            </div>
-            <div class="stat">
-                <h2>Revenue Today</h2>
-                <p>[Revenue Today]</p>
+<!-- Quick Stats -->
+    <section id="quick-stats" style="display: flex; justify-content: space-around; background-color: #f2f2f2; padding: 20px; border-radius: 10px;">
+        <div class="stat" style="text-align: center; padding: 20px; background-color: #007bff; color: white; border-radius: 5px; width: 30%;">
+            <h2>Total Turfs</h2>
+            <p style="font-size: 24px;">{{ turf_count }}</p>
+        </div>
+        <div class="stat" style="text-align: center; padding: 20px; background-color: #28a745; color: white; border-radius: 5px; width: 30%;">
+            <h2>Bookings Today</h2>
+            <p style="font-size: 24px;">{{ booking_count }}</p>
+        </div>
+        <div class="stat" style="text-align: center; padding: 20px; background-color: #dc3545; color: white; border-radius: 5px; width: 30%;">
+            <h2>Revenue Today</h2>
+            <p style="font-size: 24px;">{{ total_earnings }}</p>
+        </div>
+    </section>
+
+
+        <!-- Your Turf Listings -->
+        <section id="turf-listings">
+            <h2>Your Turfs</h2>
+            <div class="turf-list">
+                {% for turf in your_turfs %}
+                    <div class="turf-item">
+                        <img src="{{ turf.image.url }}" width="470" height="350" alt="{{ turf.turf_name }}">
+                        <h3>{{ turf.turf_name }}</h3>
+                        <p>Location: {{ turf.location }}</p>
+                        <p>Price: ₹{{ turf.price_per_hour }} per hour</p>
+                        <a href="{% url 'manage_turf' turf.id %}">Manage This Turf</a>
+                    </div>
+                {% empty %}
+                    <p>No turfs available</p>
+                {% endfor %}
             </div>
         </section>
-        
 
-
-
-<!-- Turf Listings -->
-<section id="turf-listings">
-    <h2>Your Turfs</h2>
-    <div class="turf-list">
-        {% for turf in your_turfs %}
-            <div class="turf-item">
-                <img src="{{ turf.image.url }}" width="300" height="220" alt="{{ turf.turf_name }}" >
-                <h3>{{ turf.turf_name }}</h3>
-                <p>Location: {{ turf.location }}</p>
-                <p>Price: ₹{{ turf.price_per_hour }} per hour</p>
-                <a href="{% url 'manage_turf' turf.id %}">Manage This Turf</a>
-
-            </div>
-        {% empty %}
-            <p>No turfs available</p>
-        {% endfor %}
-    </div>
-</section>
-        
         <!-- Booking Requests -->
-        <section id="booking-requests">
-            <h2>Booking Requests</h2>
-            <ul>
-                <li>
-                    <h3>[User Name]</h3>
-                    <p>Date: [Booking Date]</p>
-                    <p>Time: [Booking Time]</p>
-                </li>
-                <!-- Add more booking requests here -->
-            </ul>
+        <section id="booking">
+            <h2>Booking</h2>
+            <table border="2">
+                <thead>
+                    <tr>
+                        <th>User Email</th>
+                        <th>Date</th>
+                        <th>Time Slot</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for booking in bookings %}
+                    <tr>
+                        <td>{{ booking.user.email }}</td>
+                        <td>{{ booking.booking_date }}</td>
+                        <td>{{ booking.start_time }} - {{ booking.end_time }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </section>
     </main>
 

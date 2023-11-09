@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: black;  
+    }
+
+    .navbar {
+        background-color: #333;
+        overflow: hidden;
+        color: white;
+        padding: 14px 16px;
+    }
+    .navbar a {
+        color: white;
+        text-decoration: none;
+        padding: 14px 16px;
+        float: left;
+        cursor: pointer;
+    }
+
+    .navbar .logout {
+        float: right;
+    }
+    .content {
+        margin: 20px;
+    }
+    .user-view, .welcome {
+        display: none;
+    }
+    .user-view.active, .welcome.active {
+        display: block;
+    }
+    .user-card {
+        border: 1px solid #333;
+        border-radius: 10px;
+        margin: 10px;
+        padding: 10px;
+        width: calc(100% / 3 - 40px);
+        box-sizing: border-box;
+        cursor: pointer;
+        display: inline-block;
+    }
+    @media (max-width: 600px) {
+        .user-card {
+            width: calc(100% - 20px);
+        }
+    }
+    .user-table {
+        display: none;
+        margin: 20px;
+    }
+    .user-table.active {
+        display: block;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        border-color:antiquewhite;
+
+    }
+    td {
+        border: .25px solid #333;
+        padding: 10px;
+        text-align: left;
+    }
+    th {
+        border: .25px solid #333;
+        padding: 10px;
+        text-align: left;
+    }
+
+    /* Added rule */
+    body, .navbar a, .user-card h2, .user-card p{
+        color: white;
+        
+    }
+/* Add this CSS to your existing styles */
+.section-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+
+.right-section {
+    width: calc(50% - 10px);
+}
+.left-section {
+    width: calc(45% - 10px);
+
+}
+
+.info-box {
+    border: 1px solid #333;
+    border-radius: 10px;
+    padding: 10px;
+    margin: 10px 0;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    width: 100%;
+}
+
+.info-box:hover {
+    background-color: #444;
+}
+
+.box-link {
+    color: rgb(132, 119, 157);
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.box-description {
+    color: white;
+}
+
+.info-list {
+    list-style: none;
+    padding: 0;
+}
+
+.info-item {
+    padding: 5px 0;
+    color: white;
+}
+/* Change the background color of the Quick Stats box */
+.right-section .info-box:nth-child(1) {
+    background-color: #223f5a; /* Change to your desired color */
+    width: 70%;
+}
+
+/* Change the background color of the Recent Activities box */
+.right-section .info-box:nth-child(2) {
+    background-color: rgb(27, 31, 109); /* Change to your desired color */
+    width: 70%;
+}
+
+.pie-chart {
+    text-align: right;
+    display: block;
+    margin-top: 0px;
+}
+.info-list {
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+}
+</style>
+</head>
+<body>
+
+
+
+    <div class="navbar">
+        <a onclick="showContent('home')">Home</a>
+        <a onclick="showContent('users')">Users</a>
+        <a onclick="showContent('settings')">Settings</a>
+        <a href="{% url 'logout' %}" class="logout">Logout</a>
+    </div>
+
+
+    <div id="home" class="content welcome active">
+        <h2>Welcome, Admin!</h2>
+        
+        <div class="section-container">
+            <div class="left-section">
+                <div class="info-box">
+                    <a onclick="showContent('users')" class="box-link">Manage Turf</a>
+                    <p class="box-description">View and update user profiles and status.</p>
+                </div>
+            
+                <div class="info-box">
+                    <a href="#settings" class="box-link">Settings</a>
+                    <p class="box-description">Configure platform settings and options.</p>
+                </div>
+                                    <!-- Add this part for the pie chart -->
+
+
+            </div>
+        
+            <div class="right-section">
+                <div class="info-box">
+                    <h3>Quick Stats:</h3>
+                    <ul class="info-list">
+                        <li class="info-item">Total Users: {{ total_users }}</li>
+                        <li class="info-item">Total Turf Providers: {{ turf_providers.count }}</li>
+                        <li class="info-item">Active Users: {{ admin_users.count }}</li>
+                        <li class="info-item">Club Users: {{ club_users.count }}</li>
+                        <li class="info-item">Normal Users: {{ normal_users.count }}</li>
+                    </ul>
+                    <div class="pie-chart" style="text-align: center;">
+                        <img src="data:image/png;base64,{{ pie_chart_image }}" alt="Pie Chart" width="300">
+                    </div>
+
+                </div>
+            
+        
+                <div class="info-box">
+                    <h3>Pending Turf Provider Requests:</h3>
+                    <ul class="info-list">
+                        {% for provider in pending_providers %}
+                            <li class="info-item"><strong>Pending Request:</strong> <i>{{ provider.venue_name }} , {{ provider.address }}</i></li>
+                        {% empty %}
+                            <li class="info-item">No pending requests</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    
+    
+
+
+
+
+
+    <div id="users" class="content user-view">
+        <div class="user-card" onclick="showTable('normal')">
+            <h2>Normal User</h2>
+            <p> The backbone of sportigo</p>
+        </div>
+        <div class="user-card" onclick="showTable('club')">
+            <h2>Club User</h2>
+            <p>Clubbies...</p>
+        </div>
+        <div class="user-card" onclick="showTable('turf')">
+            <h2>Turf Provider</h2>
+            <p>Partners from different places...</p> 
+        </div>
+
+
+        <div id="normal" class="user-table">
+            <h2>Your Turfs</h2>
+            <div class="turf-list">
+                {% for turf in your_turfs %}
+                    <div class="turf-item">
+                        <img src="{{ turf.image.url }}" width="300" height="220" alt="{{ turf.turf_name }}">
+                        <h3>{{ turf.turf_name }}</h3>
+                        <p>Location: {{ turf.location }}</p>
+                        <p>Price: ₹{{ turf.price_per_hour }} per hour</p>
+                        <a href="{% url 'manage_turf' turf.id %}">Manage This Turf</a>
+                    </div>
+                {% empty %}
+                    <p>No turfs available</p>
+                {% endfor %}
+            </div>
+    
+
+
+
+        <!-- Table for Club Users -->
+        <div id="club" class="user-table">
+            <h2>Club Users</h2>
+            <form method="post">
+                {% csrf_token %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Email</th>
+                            <th>Username</th>
+                            <th>Date of Birth</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in club_users %}
+                            <tr>
+                                <td>{{ user.email }}</td>
+                                <td>{{ user.first_name }}</td>
+                                <td>{{ user.dob }}</td>
+                                <td>
+                                    <input type="hidden" name="{{ user.email }}" value="0">
+                                    <input type="checkbox" name="{{ user.email }}" {% if user.is_active %}checked{% endif %}>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <input type="submit" value="Update Status">
+            </form>
+        </div>
+
+
+<!-- Table for Turf Providers -->
+<div id="turf" class="user-table">
+    <h2>Turf Providers</h2>
+    <form method="post">
+        {% csrf_token %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Venue Name</th>
+                    <th>Email</th>
+                    <th>Contact Number</th>
+                    <th>Sports Type</th>
+                    <th>Address</th>
+                    <th>Location</th>
+                    <th>Document</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for provider in turf_providers %}
+                    <tr>
+                        <td>{{ provider.venue_name }}</td>
+                        <td>{{ provider.email }}</td>
+                        <td>{{ provider.contact_number }}</td>
+                        <td>{{ provider.get_sports_type_display }}</td>
+                        <td>{{ provider.address }}</td>
+                        <td>
+                            <a href="https://www.google.com/maps/search/?api=1&query={{ provider.location }}" target="_blank">
+                                {{ provider.location }}
+                            </a>
+                        </td>
+                        <td>
+                            <a href="{{ provider.document.url }}" target="_blank">View Document</a>
+                        </td>
+                        <td>
+                            <input type="hidden" name="{{ provider.email }}" value="0">
+                            <input type="checkbox" name="{{ provider.email }}" {% if provider.is_active %}checked{% endif %}>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <input type="submit" value="Update Status">
+    </form>
+</div>
+</div>
+    <div id="settings" class="content">
+        <!-- Add your settings content here -->
+    </div>
+    <script>
+        function showContent(id) {
+            var contents = document.getElementsByClassName('content');
+            for (var i = 0; i < contents.length; i++) {
+                contents[i].classList.remove('active');
+            }
+            document.getElementById(id).classList.add('active');
+        }
+        function showTable(id) {
+            var tables = document.getElementsByClassName('user-table');
+            for (var i = 0; i < tables.length; i++) {
+                tables[i].classList.remove('active');
+            }
+            document.getElementById(id).classList.add('active');
+        }
+    </script>
+</body>
+</html>

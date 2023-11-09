@@ -242,7 +242,7 @@
                 </div>
 
                 <div class="turf-details" style="float: left; width: 50%; margin-bottom: 0;">
-                    <div style="border: 1px solid #621e1e; border-radius: 5px; padding: 80px; margin: 10px auto; max-width: 1000px;">
+                    <div style="border: 0px solid #621e1e; border-radius: 5px; padding: 80px; margin: 10px auto; max-width: 1000px;">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                             <p><i class="fas fa-map-marker-alt"></i> {{ turf.location }}</p>
                             <p><i class="fas fa-location-arrow"></i> {{ turf.turf_name }}</p>
@@ -257,7 +257,7 @@
                 
                 <div class="booking-section" style="float: right; width: 50%; margin-top: -70px;;">
                     <section class="turf-booking">
-                        <div class="booking-container" style=" border: 1px solid #621e1e; border-radius: 5px; padding: 50px; margin: 10px auto; max-width: 1000px;">
+                        <div class="booking-container" style=" border: 1px solid #ffffff; border-radius: 5px; padding: 50px; margin: 10px auto; max-width: 1000px;">
                             <h2>Book this Turf</h2>
                             <form id="booking-form" method="post">
                                 {% csrf_token %}
@@ -273,11 +273,19 @@
                                 </div>
                                 <button id="book-now-button" class="book-button" type="submit">Book Now</button>
                             </form>
+                            {% if messages %}
+                            <ul class="messages">
+                                {% for message in messages %}
+                                    <h4><li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li></h4>
+                                {% endfor %}
+                            </ul>
+                            {% endif %}
                         </div>
                     </section>
                 </div>
         </div>
     </main>
+
     <footer>
         <p>© 2023 Turf Provider, Inc.</p>
     </footer>

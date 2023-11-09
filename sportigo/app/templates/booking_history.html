@@ -125,39 +125,37 @@ td[colspan="5"] {
     </ul>
     {% endif %}
 
-    <h1>Booking History</h1>
-    <table>
-        <thead>
+<h1>Booking History</h1>
+<table>
+    <thead>
+        <tr>
+            <th>Turf Name</th>
+            <th>Booking Date</th>
+            <th>Time Slot</th>
+            <th>Total Cost</th>
+            <th>Booking Date and Time</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for booking in user_bookings %}
             <tr>
-                <th>Turf Name</th>
-                <th>Booking Date</th>
-                <th>Time Slot</th>
-                <th>Total Cost</th>
-                <th>Booking Date and Time</th>
+                <td>{{ booking.turf_listing.turf_name }}</td>
+                <td>{{ booking.booking_date }}</td>
+                <td>{{ booking.start_time }} - {{ booking.end_time }}</td>
+                <td>${{ booking.total_cost }}</td>
+                <td>{{ booking.created_at }}</td>
             </tr>
-        </thead>
-        <tbody>
-            {% for booking in user_bookings %}
-                <tr>
-                    <td>{{ booking.turf_listing.turf_name }}</td>
-                    <td>{{ booking.booking_date }}</td>
-                    <td>{{ booking.start_time }} - {{ booking.end_time }}</td>
-                    <td>${{ booking.total_cost }}</td>
-                    <td>{{ booking.created_at }}</td>
-                </tr>
-            {% empty %}
-                <tr>
-                    <td colspan="5">No bookings found.</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    </main>
-    <!-- Add a footer with some information -->
-    <footer>
-        <p>© 2023 sportigo. All rights reserved.</p>
-
-    </footer>
+        {% empty %}
+            <tr>
+                <td colspan="5">No bookings found.</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</main>
+<!-- Add a footer with some information -->
+<footer>
+    <p>© 2023 sportigo. All rights reserved.</p>
+</footer>
 </body>
 </html>
-
