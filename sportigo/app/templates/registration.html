@@ -294,7 +294,7 @@
     function validateEmail() {
     var emailValue = email.value.trim();
     // This regular expression checks if the email address is a valid Gmail or Yahoo address
-    var emailRegex = /^(?!.*\.{2,})(?!.*@{2,})[A-Za-z0-9._%+-]+@(gmail\.com|yahoo\.com|ajce\.in|outlook\.com)$/;
+    var emailRegex = /^(?!.*\.{2,})(?!.*@{2,})[A-Za-z0-9._%+-]+@(gmail\.com|yahoo\.com|ajce\.in|outlook\.com|mca.ajce\.in)$/;
 
     if (!emailRegex.test(emailValue) || emailValue.indexOf('.') < emailValue.indexOf('@')) {
         emailError.textContent = "Please enter a valid email address.";
@@ -387,18 +387,21 @@ password.addEventListener("input", validateConfirmPassword);
             dobError.textContent = "";
         }
     }
+function validateMobileNumber() {
+  var phone_numberValue = phone_number.value.trim();
+  var phoneRegex = /^[6-9]\d{9}$/; // Matches a 10-digit phone number starting with 6-9
+  
+  if (!phone_numberValue.match(phoneRegex)) {
+    phone_numberError.textContent = "Please enter a valid 10-digit Indian mobile number starting with 6-9.";
+  } else if (/^(\d)\1*$/.test(phone_numberValue)) {
+    phone_numberError.textContent = "All digits in the mobile number cannot be the same.";
+  } else if (phone_numberValue.substr(-9) === '000000000') {
+    phone_numberError.textContent = "The last 9 digits of the mobile number cannot be all zeros.";
+  } else {
+    phone_numberError.textContent = "";
+  }
+}
 
-    // Function to validate Mobile Number
-    function validateMobileNumber() {
-        var phone_numberValue = phone_number.value.trim();
-        var phoneRegex = /^[6-9]\d{9}$/; // Matches a 10-digit phone number starting with 6-9
-
-        if (!phone_numberValue.match(phoneRegex)) {
-            phone_numberError.textContent = "Please enter a valid 10-digit Indian mobile number starting with 6-9.";
-        } else {
-            phone_numberError.textContent = "";
-        }
-    }
 
     // Function to enable/disable the submit button based on validation
     function toggleSubmitButton() {
