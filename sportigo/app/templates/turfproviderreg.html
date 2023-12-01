@@ -320,13 +320,23 @@ function validateField(field) {
 
     // Additional validation for specific field types
     switch (field.type) {
+
         case 'email':
-            // Simple pattern for email validation
-            var emailPattern = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
-            if (!emailPattern.test(field.value)) {
-                showError(field, 'Please enter a valid email address.');
-            }
-            break;
+        // Regular expression for email validation
+        var emailRegex = /^[A-Za-z0-9]{5,}@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/; // At least 5 alphanumeric characters before "@"
+        var validEmailDomains = ['gmail.com', 'yahoo.com', 'ajce.in', 'outlook.com', 'mca.ajce.in'];
+        var email = field.value;
+        var emailDomain = email.split('@')[1]?.toLowerCase(); // Get the domain part if "@" is present
+
+        if (!emailRegex.test(email) || !email.includes('@') || !validEmailDomains.includes(emailDomain)) {
+            showError(field, 'Please enter a valid email address');
+        }
+        break;
+
+
+
+
+
         case 'file':
             // Check if the file type is PDF
             var file = field.files[0];

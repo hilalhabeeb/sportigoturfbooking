@@ -77,12 +77,18 @@ class TurfListing(models.Model):
     is_available = models.BooleanField(default=True)
     available_from = models.TimeField()
     available_to = models.TimeField()
-    image = models.ImageField(upload_to='turf_images/')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.turf_name
+
+class TurfImage(models.Model):
+    turf_listing = models.ForeignKey(TurfListing, related_name='images', on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='turf_images/')
+
+    def __str__(self):
+        return f"Image for {self.turf_listing.turf_name}"
     
 
 class Booking(models.Model):

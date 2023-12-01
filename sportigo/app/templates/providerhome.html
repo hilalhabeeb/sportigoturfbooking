@@ -12,6 +12,52 @@
             padding: 0;
             background-color: #f2f2f2;
         }
+        .image-wrapper {
+            position: relative;
+            width: 470px;
+            height: 350px;
+            overflow: hidden;
+        }
+
+        .turf-image {
+            width: 100%;
+            height: auto;
+            transition: transform 1.0s ease-in-out;
+        }
+
+        .image-overlay {
+            position: absolute;
+            top: 0;
+            left: -100%; /* Initially off-screen */
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 20px;
+            transition: left 0.3s ease-in-out;
+        }
+
+        .image-wrapper:hover .turf-image {
+            transform: scale(1.1); /* Scale up the image on hover */
+        }
+
+        .image-wrapper:hover .image-overlay {
+            left: 0; /* Slide in the overlay on hover */
+        }
+        .image-overlay a {
+            display: inline-block;
+            padding: 8px 16px;
+            background-color: #1e6e21;
+            color: white;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .image-overlay a:hover {
+            background-color: #45a049;
+            color: white;
+        }
+
 
         header {
             background-color: #333;
@@ -197,23 +243,34 @@
     </section>
 
 
-        <!-- Your Turf Listings -->
-        <section id="turf-listings">
-            <h2>Your Turfs</h2>
-            <div class="turf-list">
-                {% for turf in your_turfs %}
-                    <div class="turf-item">
-                        <img src="{{ turf.image.url }}" width="470" height="350" alt="{{ turf.turf_name }}">
+<!-- Your Turf Listings -->
+<section id="turf-listings">
+    <h2>Your Turfs</h2>
+    <div class="turf-list">
+        {% for turf in your_turfs %}
+            <div class="turf-item">
+                <div class="image-wrapper">
+                    {% if turf.images.first %}
+                        <img class="turf-image" src="{{ turf.images.first.image.url }}" alt="{{ turf.turf_name }}">
+                    {% else %}
+                        <!-- If no image is available -->
+                        <img class="turf-image" src="{% static 'path_to_default_image/default_image.png' %}" alt="{{ turf.turf_name }}">
+                    {% endif %}
+                    <div class="image-overlay">
                         <h3>{{ turf.turf_name }}</h3>
                         <p>Location: {{ turf.location }}</p>
                         <p>Price: ₹{{ turf.price_per_hour }} per hour</p>
                         <a href="{% url 'manage_turf' turf.id %}">Manage This Turf</a>
                     </div>
-                {% empty %}
-                    <p>No turfs available</p>
-                {% endfor %}
+                </div>
             </div>
-        </section>
+        {% empty %}
+            <p>No turfs available</p>
+        {% endfor %}
+    </div>
+</section>
+
+
 
         <!-- Booking Requests -->
         <section id="booking">

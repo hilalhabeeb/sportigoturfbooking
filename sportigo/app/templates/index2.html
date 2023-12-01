@@ -43,7 +43,7 @@
     .turf-booking .turf-list {
         display: flex;
         flex-wrap: wrap;
-        justify-content: space-between;
+        justify-content: flex-start;
     }
 
     .turf-booking .turf-item {
@@ -250,7 +250,14 @@
             <div class="turf-list">
                 {% for turf in available_turfs %}
                     <div class="turf-item">
-                        <img src="{{ turf.image.url }}" alt="{{ turf.turf_name }}">
+                        {% if turf.images.all %}
+                            <!-- Check if the turf has images -->
+                            <img src="{{ turf.images.first.image.url }}" alt="{{ turf.turf_name }}">
+                            <!-- Display the first image of the turf -->
+                        {% else %}
+                            <!-- If no images available for the turf, display a default image -->
+                            <img src="{% static 'path_to_default_image.jpg' %}" alt="No Image">
+                        {% endif %}
                         <h3>{{ turf.turf_name }}</h3>
                         <p>Location: {{ turf.location }}</p>
                         <p>Price: ₹{{ turf.price_per_hour }}/hr</p>
@@ -285,41 +292,41 @@
 <script src="{% static 'js/vendor/vendor.js' %}"></script>
 <script src="{% static 'js/main.js' %}"></script>
 <script>
-        $('#search-form').submit(function (e) {
-            e.preventDefault(); // Prevent the default form submission
-            searchTurf();
-        });
+    $('#search-form').submit(function (e) {
+        e.preventDefault(); // Prevent the default form submission
+        searchTurf();
+    });
 
-        $('#search-input').on('input', function () {
-            searchTurf();
-        });
+    $('#search-input').on('input', function () {
+        searchTurf();
+    });
 
-        function searchTurf() {
-            var query = $('#search-input').val();
-            var searchUrl = '/search/';
+    function searchTurf() {
+        var query = $('#search-input').val();
+        var searchUrl = '/search/';
 
-            $.ajax({
-                url: searchUrl,
-                data: { query: query },
-                dataType: 'json',
-                success: function (data) {
-                    var resultsHtml = '';
+        $.ajax({
+            url: searchUrl,
+            data: { query: query },
+            dataType: 'json',
+            success: function (data) {
+                var resultsHtml = '';
 
-                    for (var i = 0; i < data.length; i++) {
-                        resultsHtml += '<div class="turf-item">';
-                        resultsHtml += '<img src="' + data[i].image + '" alt="' + data[i].turf_name + '" style="max-width: 300px; max-height: 250px;">';
-                        resultsHtml += '<h3>' + data[i].turf_name + '</h3>';
-                        resultsHtml += '<p>Location: ' + data[i].location + '</p>';
-                        resultsHtml += '<p>Price: ₹' + data[i].price_per_hour + '/hr</p>';
-                        resultsHtml += '<a href="/turf_detail/' + data[i].id + '" class="book-button">View Turf</a>';
-                        resultsHtml += '</div>';
-                    }
-                    $('#search-results').html(resultsHtml);
+                for (var i = 0; i < data.length; i++) {
+                    resultsHtml += '<div class="turf-item">';
+                    // Display the single image associated with each TurfListing
+                    resultsHtml += '<img src="' + data[i].image_url + '" alt="' + data[i].turf_name + '" style="max-width: 300px; max-height: 250px;">';
+                    resultsHtml += '<h3>' + data[i].turf_name + '</h3>';
+                    resultsHtml += '<p>Location: ' + data[i].location + '</p>';
+                    resultsHtml += '<p>Price: ₹' + data[i].price_per_hour + '/hr</p>';
+                    resultsHtml += '<a href="/turf_detail/' + data[i].id + '" class="book-button">View Turf</a>';
+                    resultsHtml += '</div>';
                 }
-            });
-        }
-
-
+                $('#search-results').html(resultsHtml);
+            }
+        });
+    }
 </script>
+
 </body>
 </html>

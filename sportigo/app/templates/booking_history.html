@@ -142,7 +142,7 @@ td[colspan="5"] {
                 <td>{{ booking.turf_listing.turf_name }}</td>
                 <td>{{ booking.booking_date }}</td>
                 <td>{{ booking.start_time }} - {{ booking.end_time }}</td>
-                <td>${{ booking.total_cost }}</td>
+                <td>₹{{ booking.total_cost }}</td>
                 <td>{{ booking.created_at }}</td>
             </tr>
         {% empty %}

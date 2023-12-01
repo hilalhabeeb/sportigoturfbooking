@@ -107,7 +107,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Kolkata'
 
 USE_I18N = True
 
@@ -148,3 +148,9 @@ EMAIL_HOST_PASSWORD = 'monn ttak owxf hyqq'
 # Media settings
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
+
+RAZORPAY_KEY_ID = 'rzp_test_gfHLcbNXLAqvpT'
+RAZORPAY_KEY_SECRET = '2RsNQRDiZYjnJuYIuMVA4cDr'
+

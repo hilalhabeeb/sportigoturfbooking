@@ -21,16 +21,13 @@ urlpatterns = [
     path('provider_update/', provider_update, name='provider_update'),
     path('providerhome/', providerhome, name='providerhome'),
     path('add_turf/',add_turf, name='add_turf'),
-    path('turf_detail/<int:turf_id>/', turf_detail, name='turf_detail'),
+    
     path('manage_turf/<int:turf_id>/', manage_turf, name='manage_turf'),
     path('change_password/',change_password, name='change_password'),
+    path('turf_detail/<int:turf_id>/', turf_detail, name='turf_detail'),
     path('booking_history/',booking_history, name='booking_history'),
-    
+    path('confirmation/',confirmation, name='confirmation'),
     path('search/',search, name='search'),
-
-
-
-
 
 
 ]
