@@ -485,9 +485,6 @@ def add_turf(request):
 
 
 
-
-
-
 from datetime import datetime, timedelta
 from django.shortcuts import render, HttpResponseRedirect
 from .models import TurfListing
@@ -581,47 +578,7 @@ def turf_detail(request, turf_id):
 
 from django.shortcuts import get_object_or_404
 
-# @csrf_exempt
-# def confirmation(request):
-#     if request.method == 'POST':
-#         amount = 50000 
-        
-#         client = razorpay.Client(auth=("rzp_test_gfHLcbNXLAqvpT", "2RsNQRDiZYjnJuYIuMVA4cDr"))
-#         payment = client.order.create({'amount': amount, 'currency': 'INR', 'payment_capture': '1'})
-#         razorpay_payment_id = request.POST.get('razorpay_payment_id')
-        
-#         if razorpay_payment_id:
-#             # Retrieve booking details from session or request.POST
-#             # Here, I assume you've stored booking information in the session during turf_detail view
-#             selected_date = request.session.get('selected_date')
-#             start_time = request.session.get('start_time')
-#             end_time = request.session.get('end_time')
-#             turf_id = request.session.get('turf_id')
-#             total_cost = Decimal(request.session.get('total_cost'))
-#             user = request.user
-            
-#             # Get TurfListing instance
-#             turf = get_object_or_404(TurfListing, id=turf_id)
-            
-#             # Create and save Booking instance
-#             booking = Booking.objects.create(
-#                 user=user,
-#                 turf_listing=turf,
-#                 # Replace 'turf.provider' with an appropriate attribute or remove this if not needed
-#                 turf_provider=turf.turf_provider,  # Placeholder attribute, replace this with correct provider info
-#                 booking_date=selected_date,
-#                 start_time=start_time,
-#                 end_time=end_time,
-#                 total_cost=total_cost  # Convert amount back to decimal for total_cost
-#             )
-            
-#             messages.success(request, 'Payment successful! Booking confirmed.')
-#             return redirect('booking_history')
-#         else:
-#             messages.error(request, 'Payment unsuccessful. Please try again.')
-#             return redirect('turf_detail', turf_id=turf_id)
-        
-#     return render(request, 'confirmation.html', {'payment': payment})
+
 
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
@@ -755,9 +712,6 @@ def manage_turf(request, turf_id):
 
 
 
-
-
-
 from django.http import JsonResponse
 from django.db.models import Q
 
@@ -794,7 +748,47 @@ def search(request):
 
 
 
-
+# @csrf_exempt
+# def confirmation(request):
+#     if request.method == 'POST':
+#         amount = 50000 
+        
+#         client = razorpay.Client(auth=("rzp_test_gfHLcbNXLAqvpT", "2RsNQRDiZYjnJuYIuMVA4cDr"))
+#         payment = client.order.create({'amount': amount, 'currency': 'INR', 'payment_capture': '1'})
+#         razorpay_payment_id = request.POST.get('razorpay_payment_id')
+        
+#         if razorpay_payment_id:
+#             # Retrieve booking details from session or request.POST
+#             # Here, I assume you've stored booking information in the session during turf_detail view
+#             selected_date = request.session.get('selected_date')
+#             start_time = request.session.get('start_time')
+#             end_time = request.session.get('end_time')
+#             turf_id = request.session.get('turf_id')
+#             total_cost = Decimal(request.session.get('total_cost'))
+#             user = request.user
+            
+#             # Get TurfListing instance
+#             turf = get_object_or_404(TurfListing, id=turf_id)
+            
+#             # Create and save Booking instance
+#             booking = Booking.objects.create(
+#                 user=user,
+#                 turf_listing=turf,
+#                 # Replace 'turf.provider' with an appropriate attribute or remove this if not needed
+#                 turf_provider=turf.turf_provider,  # Placeholder attribute, replace this with correct provider info
+#                 booking_date=selected_date,
+#                 start_time=start_time,
+#                 end_time=end_time,
+#                 total_cost=total_cost  # Convert amount back to decimal for total_cost
+#             )
+            
+#             messages.success(request, 'Payment successful! Booking confirmed.')
+#             return redirect('booking_history')
+#         else:
+#             messages.error(request, 'Payment unsuccessful. Please try again.')
+#             return redirect('turf_detail', turf_id=turf_id)
+        
+#     return render(request, 'confirmation.html', {'payment': payment})
 # @csrf_exempt
 # def confirmation(request):
 #     if request.method == 'POST':

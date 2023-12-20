@@ -157,7 +157,7 @@
 
     <div class="navbar">
         <a onclick="showContent('home')">Home</a>
-        <a onclick="showContent('users')">Users</a>
+        <a onclick="showContent('users')" id="userss">Users</a>
         <a onclick="showContent('settings')">Settings</a>
         <a href="{% url 'logout' %}" class="logout">Logout</a>
     </div>
@@ -221,7 +221,7 @@
 
 
     <div id="users" class="content user-view">
-        <div class="user-card" onclick="showTable('normal')">
+        <div class="user-card" onclick="showTable('normal')" id="normalDiv">
             <h2>Normal User</h2>
             <p> The backbone of sportigo</p>
         </div>
@@ -256,13 +256,13 @@
                                 <td>{{ user.dob }}</td>
                                 <td>
                                     <input type="hidden" name="{{ user.email }}" value="0">
-                                    <input type="checkbox" name="{{ user.email }}" {% if user.is_active %}checked{% endif %}>
+                                    <input id="suspendCheck" type="checkbox" name="{{ user.email }}" {% if user.is_active %}checked{% endif %}>
                                 </td>
                             </tr>
                         {% endfor %}
                     </tbody>
                 </table>
-                <input type="submit" value="Update Status">
+                <input type="submit" id="statusUpd" value="Update Status">
             </form>
         </div>
     
