@@ -175,6 +175,96 @@
 .btn:hover {
     background-color: #0b4c7e;
 }
+.turf-container {
+    display: flex; /* Make the container flexbox */
+    flex-wrap: nowrap; /* Prevent items from wrapping to next line */
+    overflow-x: auto; /* Add horizontal scroll if items overflow */
+}
+
+.turf-itemm {
+    flex: 0 0 auto; /* Prevent items from stretching */
+    margin-right: 20px; /* Add margin between items */
+}
+/* Chat container */
+.chat-container {
+  overflow-y: auto;
+  max-height: 300px; /* Adjust this value as needed */
+}
+
+/* Chat message */
+.chat-message {
+  margin-bottom: 10px;
+}
+
+/* Chat message content */
+.chat-message-content {
+  padding: 10px;
+  border-radius: 10px;
+  max-width: 70%;
+}
+
+/* Bot message */
+.bot .chat-message-content {
+  background-color: #f0f0f0;
+  color: #000;
+  float: left;
+}
+
+/* User message */
+.user .chat-message-content {
+  background-color: #007bff;
+  color: #fff;
+  float: right;
+}
+
+/* Clearfix */
+.clearfix::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+/* Button style */
+#openFaqModalButton {
+    position: fixed;
+    bottom: 20px; /* Adjust this value as needed */
+    right: 20px; /* Adjust this value as needed */
+    z-index: 9999; /* Ensure the button appears above other content */
+}
+
+/* Modal style (optional) */
+/* Override Bootstrap modal styles */
+.modal-dialog {
+    position: fixed;
+    bottom: 5px;
+    right: 0;
+    margin: 0;
+   
+}
+
+/* Optionally, adjust the modal size */
+.modal-dialog {
+    max-width: 500px; /* Adjust this value as needed */
+
+}
+
+.btnn {
+    position: fixed;
+    bottom: 20px; /* Adjust as needed */
+    right: 20px; /* Adjust as needed */
+    z-index: 1000; /* Make sure it's above other content */
+    background-color: transparent; /* Set the background color of the button to transparent */
+    border: none; /* Remove any border */
+}
+
+.btnn img {
+    width: 50px; /* Adjust the width of the image as needed */
+    height: auto; /* Maintain aspect ratio */
+    border: none; /* Remove the border */
+}
+
+
+
+
 
 </style>
 </head>
@@ -210,9 +300,9 @@
                                                 <span></span></a></li>
                                         <li><a href="{% url 'user_profile' %}">profile<span></span> <span></span> <span></span> <span></span></a>
                                         </li>
+                                        <li><a href="{% url 'faq' %}">FAQ<span></span> <span></span> <span></span> <span></span></a>
+                                        </li>
 
-                                        <li><a href="{% url 'contact' %}">contact <span></span> <span></span> <span></span>
-                                                <span></span></a></li>
                                     </ul>
                                 </div>
                             </div>
@@ -227,6 +317,46 @@
         </div>
     </header>
     <br><br1><br><br><br><br><br>
+
+<!-- Button/link to trigger modal -->
+<button type="button" class="btnn btn-primary" data-toggle="modal" data-target="#faqModal">
+    <img src="{% static 'images/chat.png' %}" alt="FAQ Icon">
+</button>
+
+          
+<!-- Modal -->
+<div class="modal fade" id="faqModal" tabindex="-1" role="dialog" aria-labelledby="faqModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="faqModalLabel">Frequently Asked Questions</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body chat-container">
+          {% for faq in faqs %}
+            {% if forloop.none %}
+              <div class="chat-message bot">
+                <div class="chat-message-content">{{ faq.question }}</div>
+              </div>
+
+            {% else %}
+              <div class="chat-message user">
+                <div class="chat-message-content">{{ faq.question }}</div>
+              </div>
+            {% endif %}
+            <div class="chat-message bot">
+              <div class="chat-message-content">{{ faq.answer }}</div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+  
+
+
         
         <section class="search-section">
             <div class="container">
@@ -235,13 +365,21 @@
                     <div class="input-group mb-3">
                         <input type="text" id="search-input" class="form-control" placeholder="Search by turf name or location" />
                         <button type="submit" class="btn btn-primary">Search</button>
+                      
+                        
                     </div>
+                    <a href="#" class="btn btn-primary" onclick="findNearestTurf()">Find Nearest Turf</a>
+
+
                 </form>
                 <div id="search-results" class="search-results">
                     <!-- Display search results here -->
                 </div>
+
+                <div id="nearest-turfs" class="turf-container"></div>
             </div>
         </section>
+
     <!-- Turf Booking section -->
     <section class="turf-booking">
         <div class="container">
@@ -289,6 +427,74 @@
         </div>
     </section>
 </div>
+
+<script>
+    // Function to fetch user's location and redirect to find nearest turf view
+    function findNearestTurf() {
+        // Check if geolocation is supported by the browser
+        if (navigator.geolocation) {
+            // Fetch user's current position
+            navigator.geolocation.getCurrentPosition(function(position) {
+                // Extract latitude and longitude
+                var latitude = position.coords.latitude;
+                var longitude = position.coords.longitude;
+
+                // Redirect to find nearest turf view with latitude and longitude parameters
+                window.location.href = "{% url 'find_nearest_turf_view' %}?latitude=" + latitude + "&longitude=" + longitude;
+            }, function(error) {
+                // Handle error if geolocation is denied or fails
+                console.error('Error getting user location:', error);
+                alert('Could not fetch user location. Please enable location services.');
+            });
+        } else {
+            // Browser doesn't support geolocation
+            alert('Geolocation is not supported by this browser.');
+        }
+    }
+</script>
+
+<script>
+    function findNearestTurf() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                var latitude = position.coords.latitude;
+                var longitude = position.coords.longitude;
+
+                $.get("{% url 'find_nearest_turf_view' %}?latitude=" + latitude + "&longitude=" + longitude, function(response) {
+                    if (response && response.turfs) {
+                        var resultsHtml = '<div class="turf-container">'; // Start of turf container
+                        response.turfs.forEach(function(turf) {
+                            resultsHtml += '<div class="turf-itemm">';
+                            resultsHtml += '<img src="' + turf.image_url + '" alt="' + turf.venue_name + '" style="max-width: 300px; max-height: 250px;">';
+                            resultsHtml += '<h3>' + turf.venue_name + '</h3>';
+                            resultsHtml += '<p>Location: ' + turf.location + '</p>';
+                            resultsHtml += '<p>Price: ₹' + turf.price_per_hour + '/hr</p>';
+                            resultsHtml += '<p>Distance: ' + turf.distance.toFixed(2) + ' km</p>'; // Display distance with two decimal places
+                            resultsHtml += '<a href="' + turf.turf_detail_url + '" class="book-button">View Turf</a>';
+                            resultsHtml += '</div>';
+                        });
+                        resultsHtml += '</div>'; // End of turf container
+                        $('#nearest-turfs').html(resultsHtml);
+                    } else {
+                        $('#nearest-turfs').html('<p>No turfs found or error fetching turfs.</p>');
+                    }
+                });
+            }, function(error) {
+                console.error('Error getting user location:', error);
+                alert('Could not fetch user location. Please enable location services.');
+            });
+        } else {
+            alert('Geolocation is not supported by this browser.');
+        }
+    }
+</script>
+
+
+
+
+
+
+
 <script src="{% static 'js/vendor/vendor.js' %}"></script>
 <script src="{% static 'js/main.js' %}"></script>
 <script>

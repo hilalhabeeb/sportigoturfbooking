@@ -63,6 +63,25 @@ class TurfProvider(models.Model):
     def __str__(self):
         return self.venue_name
     
+from django.db import models
+
+class ClubUser(models.Model):
+    club_id = models.CharField(max_length=50, unique=True, default='123') 
+    club_name = models.CharField(max_length=255)
+    email = models.EmailField(primary_key=True, unique=True)
+    contact_number = models.CharField(max_length=15)
+    document = models.FileField(upload_to='club_documents/')
+    address = models.TextField()
+    is_active = models.BooleanField(default=False) 
+    random_password = models.CharField(max_length=20, null=True, blank=True)
+    password_updated = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.club_name
+
+
+
+
 
 class TurfListing(models.Model):
     turf_provider = models.ForeignKey(TurfProvider, on_delete=models.CASCADE)
@@ -73,6 +92,7 @@ class TurfListing(models.Model):
     )
     description = models.TextField()
     price_per_hour = models.DecimalField(max_digits=10, decimal_places=2)
+    price_per_day = models.DecimalField(max_digits=10, decimal_places=2)
     location = models.CharField(max_length=100)
     is_available = models.BooleanField(default=True)
     available_from = models.TimeField()
@@ -100,6 +120,27 @@ class Booking(models.Model):
     end_time = models.TimeField()
     total_cost = models.DecimalField(max_digits=10, decimal_places=2)
     created_at = models.DateTimeField(auto_now_add=True)
+    is_canceled = models.BooleanField(default=False)
 
     def __str__(self):
         return f"Booking for {self.turf_listing.turf_name} by {self.user.email}"
+    
+class ClubBooking(models.Model):
+    user = models.ForeignKey(ClubUser, on_delete=models.CASCADE, related_name='club_bookings')
+    turf_listing = models.ForeignKey(TurfListing, on_delete=models.CASCADE)
+    turf_provider = models.ForeignKey(TurfProvider, on_delete=models.CASCADE)
+    start_date = models.DateField()
+    end_date = models.DateField()
+    total_cost = models.DecimalField(max_digits=10, decimal_places=2)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Club Booking for {self.turf_listing.turf_name} by {self.user.email}"
+    
+
+class FAQ(models.Model):
+    question = models.CharField(max_length=255)
+    answer = models.TextField()
+
+    def __str__(self):
+        return self.question

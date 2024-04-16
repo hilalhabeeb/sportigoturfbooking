@@ -3,7 +3,7 @@ import random
 import string
 from django.contrib.auth import login, logout, authenticate ,get_user_model
 
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse
 from django.shortcuts import redirect, render
 from .models import *
 from django.contrib import messages 
@@ -21,15 +21,15 @@ from io import BytesIO
 import base64
 from .forms import TurfImageForm, TurfListingForm
 from django.views.decorators.csrf import csrf_exempt
-
-
-
-
+from .models import TurfProvider, Usertable, ClubUser
+from .import candy
 from io import BytesIO
 import base64
 import matplotlib
 matplotlib.use('agg')
 import matplotlib.pyplot as plt
+from django.shortcuts import render, redirect
+from .models import ClubUser
 
 def generate_pie_chart(normal_users_count, club_users_count, turf_providers_count):
     # Data
@@ -67,9 +67,9 @@ def generate_pie_chart(normal_users_count, club_users_count, turf_providers_coun
 
   
 
-# @never_cache
+
 def index(request):
-    return render(request, "index.html")
+    return candy.render(request, "index.html")
 
 
 def signup(request):
@@ -90,6 +90,39 @@ def signup(request):
 
         return redirect('user_login')
     return render(request, "registration.html")
+
+
+
+
+
+
+
+def register_club_user(request):
+    if request.method == 'POST':
+        club_id = request.POST.get('clubID')
+        club_name = request.POST.get('clubName')
+        email = request.POST.get('email')
+        contact_number = request.POST.get('phone')
+        address = request.POST.get('address')
+        document = request.FILES.get('clubLicense')
+        
+        # Create a new ClubUser instance and save it
+        new_club_user = ClubUser(
+            club_id=club_id,
+            club_name=club_name,
+            email=email,
+            contact_number=contact_number,
+            address=address,
+            document=document,
+        )
+        new_club_user.save()
+        
+        # Optionally, you may want to add logic for sending verification email or setting other fields
+        
+        return candy.render(request, 'index.html', {'registration_success': True})  # Pass a context variable indicating success
+    else:
+        return candy.render(request, 'index.html')  # Render the registration form template
+
 
 
 
@@ -130,20 +163,40 @@ def user_login(request):
 
                     if user.role == 'admin':
                         return redirect('adminreg')
-                    elif user.role == 'normal_user' or user.role == 'club_user':  
+                    elif user.role == 'normal_user':  
                         return redirect('index2')
 
                 else:
                     error_message = "Invalid credentials or inactive user."
                     messages.error(request, error_message)
             except Usertable.DoesNotExist:
-                error_message = "User does not exist."
-                messages.error(request, error_message)
+                # User does not exist in Usertable, check ClubUser
+                try:
+                    club_user = ClubUser.objects.get(email=email)
+
+                    if club_user.is_active:
+                        if club_user.password_updated:
+
+                            if password == club_user.random_password:
+                                request.session['email'] = email
+                                return redirect('clubhome')  # Redirect to clubhome.html
+                            else:
+                                error_message = "Invalid credentials."
+                                messages.error(request, error_message)
+                        else:
+                            # Redirect to the password update page
+                            request.session['email'] = email
+                            return redirect('club_update')
+                    else:
+                        error_message = "Inactive user."
+                        messages.error(request, error_message)
+                except ClubUser.DoesNotExist:
+                    error_message = "User does not exist."
+                    messages.error(request, error_message)
 
     response = render(request, 'login.html')
     response['Cache-Control'] = 'no-store, must-revalidate'
     return response
-
 
 
 def provider_update(request):
@@ -170,6 +223,46 @@ def provider_update(request):
     }
 
     return render(request, 'providerupdate.html', context)
+
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from .models import ClubUser
+
+def club_update(request):
+    # Retrieve user email from the session
+    user_email = request.session.get('email')
+
+    # Fetch the ClubUser object using the email
+    try:
+        club_user = ClubUser.objects.get(email=user_email)
+    except ClubUser.DoesNotExist:
+        # Handle the case where the ClubUser does not exist
+        messages.error(request, 'User not found.')
+        return redirect('index')
+
+    if request.method == 'POST':
+        # Handle the form submission
+        new_password = request.POST.get('new_password')
+
+        # Update the random_password field in the ClubUser model
+        club_user.random_password = new_password
+        club_user.password_updated = True  # Set the flag to True
+        club_user.save()
+
+        # Update the email session with the latest user email
+        request.session['email'] = club_user.email
+
+        # Optionally, you can add a success message
+        messages.success(request, 'Password updated successfully.')
+
+        # Redirect the user to the clubhome page
+        return redirect('clubhome')
+
+    context = {
+        'club_user': club_user,
+    }
+
+    return render(request, 'clubupdate.html', context)
 
 
 from .models import Booking 
@@ -207,12 +300,108 @@ def userLogout(request):
     logout(request) 
     return redirect('index')
 
+
+
+from django.shortcuts import render, redirect
+from .models import FAQ
+from .models import TurfListing
+
 def index2(request):
     if 'email' in request.session:
         # Fetch available turfs from the database
         available_turfs = TurfListing.objects.filter(is_available=True)
+        
+        # Fetch FAQs from the database
+        faqs = FAQ.objects.all()
 
-        response = render(request, 'index2.html', {'available_turfs': available_turfs})
+        response = render(request, 'index2.html', {'available_turfs': available_turfs, 'faqs': faqs})
+        response['Cache-Control'] = 'no-store, must-revalidate'
+        return response
+    else:
+        return redirect('index')
+
+
+
+
+# views.py
+from .utils import find_turfs_sorted_by_distance
+from django.urls import reverse
+
+@login_required
+def find_nearest_turf_view(request):
+    if request.method == 'GET':
+        # Get latitude and longitude from GET parameters
+        latitude = request.GET.get('latitude')
+        longitude = request.GET.get('longitude')
+
+        if latitude and longitude:
+            # Get turf locations and names
+            turf_data = [(turf.venue_name, float(turf.location.split(',')[0]), float(turf.location.split(',')[1])) for turf in TurfProvider.objects.all()]
+
+            # Get sorted turfs by distance
+            sorted_turfs = find_turfs_sorted_by_distance(float(latitude), float(longitude), turf_data)
+
+            # Initialize a list to store turfs data
+            turfs_data = []
+
+            # Fetch additional information for each turf and include it in turfs_data
+            for turf in sorted_turfs:
+                venue_name = turf[0]
+                # Retrieve turf listing information
+                try:
+                    turf_listing = TurfListing.objects.get(turf_name=venue_name)
+                    # Retrieve the first image associated with the turf, if available
+                    image = TurfImage.objects.filter(turf_listing=turf_listing).first()
+                    image_url = image.image.url if image else None
+                    # Construct the URL for the turf detail view
+                    turf_detail_url = reverse('turf_detail', kwargs={'turf_id': turf_listing.id})
+                    # Include turf information in turfs_data
+                    turfs_data.append({
+                        'venue_name': venue_name,
+                        'latitude': turf[1],
+                        'longitude': turf[2],
+                        'distance': turf[2],  # Adjusted index for distance
+                        'image_url': image_url,
+                        'price_per_hour': turf_listing.price_per_hour,
+                        'location': turf_listing.location,
+                        'turf_detail_url': turf_detail_url  # Include the URL for the turf detail view
+                    })
+                except TurfListing.DoesNotExist:
+                    # Handle the case where turf listing doesn't exist
+                    pass
+
+            # Return JSON response with turfs data
+            return JsonResponse({'turfs': turfs_data})
+
+    # Handle invalid or missing parameters
+    return JsonResponse({'error': 'Invalid or missing latitude and longitude'}, status=400)
+
+
+
+
+
+
+
+
+
+
+def clubhome(request):
+    if 'email' in request.session:
+        try:
+            # Retrieve the ClubUser object using the email stored in the session
+            club_user = ClubUser.objects.get(email=request.session['email'])
+            club_name = club_user.club_name  # Assuming club_name is a field in ClubUser model
+    
+        except ClubUser.DoesNotExist:
+            # Handle the case where ClubUser does not exist for the given email
+            club_name = None
+        
+        # Fetch available turfs from the database
+        available_turfs = TurfListing.objects.filter(is_available=True)
+
+        # Pass club_name to the template context
+        context = {'available_turfs': available_turfs, 'club_name': club_name}
+        response = render(request, 'clubhome.html', context)
         response['Cache-Control'] = 'no-store, must-revalidate'
         return response
     else:
@@ -268,13 +457,25 @@ def generate_otp(length=6):
     otp = ''.join(random.choice(characters) for _ in range(length))
     return otp
 
+from django.shortcuts import render, redirect
+from .models import Usertable, TurfProvider, ClubUser
+
 def adminreg(request):
     if not request.session.get('email'):
         return redirect('index')  # Redirect to the index page if the user is not logged in
+    
+    faqs = FAQ.objects.all()
+    form = FAQForm()
 
     if request.method == 'POST':
-        # Handle status change for users
-        for user in Usertable.objects.all():
+        form = FAQForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('adminreg')
+
+    if request.method == 'POST':
+        # Handle status change for normal users
+        for user in Usertable.objects.filter(role='normal_user'):
             if user.email in request.POST:
                 new_status = request.POST.get(user.email) == 'on'
                 if user.is_active != new_status:
@@ -284,7 +485,7 @@ def adminreg(request):
                     # Send email notification for both active and inactive status changes
                     send_status_change_notification(user, new_status)
 
-        # Handle status change for TurfProvider users
+        # Handle status change for turf provider users
         for provider in TurfProvider.objects.all():
             if provider.email in request.POST:
                 new_status = request.POST.get(provider.email) == 'on'
@@ -299,31 +500,45 @@ def adminreg(request):
 
                     # Send email notification for activation with a random password
                     send_turf_provider_activation_notification(provider, random_password, new_status)
+                    
+        # Handle status change for club users
+        for club_user in ClubUser.objects.all():
+            if club_user.email in request.POST:
+                new_status = request.POST.get(club_user.email) == 'on'
+                if club_user.is_active != new_status:
+                    club_user.is_active = new_status
+                    club_user.password_updated = '0'
+                    club_user.save()
 
-    # Calculate the total count of users (both Usertable and TurfProvider)
-    total_users = Usertable.objects.count() + TurfProvider.objects.count()
+                    random_password = generate_random_password()
+                    club_user.random_password = random_password
+                    club_user.save()
+
+                    # Send email notification for both active and inactive status changes
+                    send_club_user_activation_notification(club_user,random_password, new_status)
+
+    # Calculate the total count of users (Usertable, TurfProvider, ClubUser)
+    total_users = Usertable.objects.count() + TurfProvider.objects.count() + ClubUser.objects.count()
+    
     # Retrieve pending turf providers
     pending_providers = TurfProvider.objects.filter(is_active=False)
+    pending_club = ClubUser.objects.filter(is_active=False)
     
-    # Calculate user counts here
+    # Calculate user counts
     admin_count = Usertable.objects.filter(role='admin').count()
     normal_users_count = Usertable.objects.filter(role='normal_user').count()
-    club_users_count = Usertable.objects.filter(role='club_user').count()
+    club_users_count = ClubUser.objects.count()
     turf_providers_count = TurfProvider.objects.count()
 
     # Generate the pie chart
     pie_chart_image = generate_pie_chart(normal_users_count, club_users_count, turf_providers_count)
 
-
-
-
     # Retrieve users based on their roles
     admin_users = Usertable.objects.filter(role='admin')
     normal_users = Usertable.objects.filter(role='normal_user')
-    club_users = Usertable.objects.filter(role='club_user')
+    club_users = ClubUser.objects.all()
     turf_providers = TurfProvider.objects.all()
     
-
     context = {
         'admin_users': admin_users,
         'normal_users': normal_users,
@@ -331,11 +546,72 @@ def adminreg(request):
         'turf_providers': turf_providers,
         'total_users': total_users,
         'pending_providers': pending_providers,
+        'pending_club': pending_club,
+        'form': form,
+        'faqs': faqs,
         'pie_chart_image': pie_chart_image,
         # Add more data as needed
     }
 
     return render(request, 'adminreg.html', context)
+
+from django.shortcuts import render, redirect
+from .models import FAQ
+from .forms import FAQForm
+
+from django.shortcuts import render, redirect
+from .models import FAQ, Usertable, TurfProvider, ClubUser
+from .forms import FAQForm
+
+
+def manage_faqs(request):
+    if not request.session.get('email'):
+        return redirect('index')  # Redirect to the index page if the user is not logged in
+
+    faqs = FAQ.objects.all()
+    form = FAQForm()
+
+    if request.method == 'POST':
+        form = FAQForm(request.POST)
+        if form.is_valid():
+            form.save()
+            # Redirect to manage_faqs and fetch user statistics
+            return redirect('manage_faqs')
+
+    # Fetch user statistics
+    total_users = Usertable.objects.count() + TurfProvider.objects.count() + ClubUser.objects.count()
+    admin_users = Usertable.objects.filter(role='admin')
+    normal_users = Usertable.objects.filter(role='normal_user')
+    club_users = ClubUser.objects.all()
+    turf_providers = TurfProvider.objects.all()
+    turf_providers_count = turf_providers.count()
+    normal_users_count = normal_users.count()
+    club_users_count = club_users.count()
+
+    # Generate the pie chart
+    pie_chart_image = generate_pie_chart(normal_users_count, club_users_count, turf_providers_count)
+
+    context = {
+        'faqs': faqs,
+        'form': form,
+        'total_users': total_users,
+        'admin_users': admin_users,
+        'normal_users': normal_users,
+        'club_users': club_users,
+        'turf_providers': turf_providers,
+        'pie_chart_image': pie_chart_image,
+    }
+
+    return render(request, 'adminreg.html', context)
+
+
+
+def delete_faq(request, faq_id):
+    faq = FAQ.objects.get(id=faq_id)
+    faq.delete()
+    return redirect('manage_faqs')
+
+
 
 def send_status_change_notification(user, new_status):
     subject = "Your Status Change Notification"
@@ -354,8 +630,7 @@ def generate_random_password():
     return ''.join(random.choice(characters) for _ in range(password_length))
 
 def send_turf_provider_activation_notification(provider, random_password,new_status):
-    # Implement your email notification logic for TurfProvider activation
-    # Example for activation notification:
+
     subject = 'Turf Provider Account Activation'
     if new_status:
         message = f'Congratulations! Your Turf Provider account is now verified by the admin. Your initial password is: {random_password}'
@@ -364,6 +639,18 @@ def send_turf_provider_activation_notification(provider, random_password,new_sta
 
     from_email = 'sportigoplayspot@gmail.com'
     recipient_list = [provider.email]
+    send_mail(subject, message, from_email, recipient_list)
+
+def send_club_user_activation_notification(club_user, random_password,new_status):
+
+    subject = 'Club User Account Activation'
+    if new_status:
+        message = f'Congratulations! Your Club User account is now verified by the admin. Your initial password is: {random_password}'
+    else:
+        message = "Sorry,your request for joining sportigo is rejected"
+
+    from_email = 'sportigoplayspot@gmail.com'
+    recipient_list = [club_user.email]
     send_mail(subject, message, from_email, recipient_list)
 
 def turfproviderreg(request):
@@ -483,8 +770,6 @@ def add_turf(request):
 
     return render(request, 'addturf.html', {'turf_form': turf_form, 'image_form': image_form})
 
-
-
 from datetime import datetime, timedelta
 from django.shortcuts import render, HttpResponseRedirect
 from .models import TurfListing
@@ -506,6 +791,7 @@ from django.contrib import messages
 from datetime import datetime, timedelta
 from .models import TurfListing, Booking
 from django.db.models import Q
+
 
 @login_required
 def turf_detail(request, turf_id):
@@ -529,7 +815,8 @@ def turf_detail(request, turf_id):
             Q(booking_date=selected_date),
             Q(start_time__lte=start_time, end_time__gte=start_time) |
             Q(start_time__lte=end_time, end_time__gte=end_time),
-            turf_listing=turf
+            turf_listing=turf,
+            is_canceled=False
         )
 
         if existing_bookings.exists():
@@ -576,10 +863,76 @@ def turf_detail(request, turf_id):
     return render(request, 'turf_detail.html', context)
 
 
+
+
+from django.shortcuts import render
+from .models import FAQ
+
+def faq(request):
+    all_faqs = FAQ.objects.all()
+    context = {
+        'all_faqs': all_faqs,
+    }
+
+    return render(request, 'faq.html', context)
+
+
+# def turf_detail2(request, turf_id):
+#     if request.method == 'POST':
+#         start_date = request.POST.get('start_date')
+#         end_date = request.POST.get('end_date')
+
+#         if not start_date or not end_date:
+#             return HttpResponse("Please select start and end dates")
+
+#         turf = get_object_or_404(TurfListing, id=turf_id)
+
+#         # Calculate total cost based on the duration of the booking
+#         start_date_obj = datetime.strptime(start_date, '%Y-%m-%d')
+#         end_date_obj = datetime.strptime(end_date, '%Y-%m-%d')
+#         duration_days = (end_date_obj - start_date_obj).days + 1  # Including the end date
+#         total_cost = duration_days * turf.price_per_day  # Assuming price_per_day is a field in TurfListing model
+
+#         # Check for existing bookings during the selected period
+#         existing_bookings = Booking.objects.filter(
+#             Q(booking_date__range=[start_date, end_date]),
+#             turf_listing=turf
+#         )
+
+#         if existing_bookings.exists():
+#             messages.error(request, 'This turf is already booked for the selected period. Please choose different dates.')
+#             return redirect('turf_detail2', turf_id=turf_id)
+
+#         # Storing booking information in session
+#         request.session['start_date'] = start_date
+#         request.session['end_date'] = end_date
+#         request.session['turf_id'] = turf_id
+#         request.session['total_cost'] = float(total_cost)
+
+#         # Redirect to the confirmation page
+
+#         context = {
+#         'turf': turf,
+#         'start_date': start_date,
+#         'end_date': end_date,
+#         'total_cost': total_cost,
+#         'amount': total_cost * 100  # Multiply total_cost by 100
+# }
+#         return render(request, 'confirmation2.html', context)
+
+#     turf = get_object_or_404(TurfListing, id=turf_id)
+#     context = {
+#         'turf': turf,
+#     }
+#     return render(request, 'turf_detail2.html', context)
+
+
+
+
+
+
+
 from django.shortcuts import get_object_or_404
-
-
-
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
@@ -657,19 +1010,221 @@ def confirmation(request):
     return render(request, 'confirmation.html', {'payment': payment})
 
 
+from django.http import JsonResponse
+
+from django.shortcuts import HttpResponse, get_object_or_404
+from django.views.decorators.csrf import csrf_exempt
+from .models import Booking
+
+@csrf_exempt
+def cancel_booking(request, booking_id):
+    # Retrieve the booking
+    booking = Booking.objects.get(pk=booking_id)
+
+    # Cancel the booking
+    booking.is_canceled = True
+    booking.save()
+
+    # Send email to the user
+    subject = 'Your Turf Booking has been Cancelled'
+    message = f"Your booking for {booking.turf_listing.turf_name} on {booking.booking_date} {booking.start_time} to {booking.end_time} has been cancelled.\n\n Your money will be credited to your account shortly.Thank you for using our service."
+    from_email = 'sportigoplayspot@gmail.com'  # Update with your email
+    to_email = [booking.user.email]
+
+    send_mail(subject, message, from_email, to_email)
+
+    return HttpResponse('Booking cancelled successfully')
+
+
+
+
+
+@csrf_exempt
+def confirmation2(request):
+    if request.method == 'POST':
+        amount = 50000  # This should be replaced with the actual total cost calculated in the turf_detail2 view
+        
+        client = razorpay.Client(auth=("rzp_test_gfHLcbNXLAqvpT", "2RsNQRDiZYjnJuYIuMVA4cDr"))
+        payment = client.order.create({'amount': amount, 'currency': 'INR', 'payment_capture': '1'})
+        razorpay_payment_id = request.POST.get('razorpay_payment_id')
+
+        if razorpay_payment_id:
+            # Retrieve booking details from session or request.POST
+            start_date = request.session.get('start_date')
+            end_date = request.session.get('end_date')
+            turf_id = request.session.get('turf_id')
+            total_cost = Decimal(request.session.get('total_cost'))
+            
+            # Get the email of the current user from the session
+            user_email = request.session.get('email')
+            
+            # Retrieve the corresponding ClubUser instance based on the email
+            club_user = ClubUser.objects.get(email=user_email)
+            
+            # Get TurfListing instance
+            turf = get_object_or_404(TurfListing, id=turf_id)
+            
+            # Create and save Booking instance
+            booking = ClubBooking.objects.create(
+                user=club_user,
+                turf_listing=turf,
+                turf_provider=turf.turf_provider,  # Replace 'turf.provider' with appropriate attribute or remove if not needed
+                start_date=start_date,
+                end_date=end_date,
+                total_cost=total_cost
+            )
+            
+            # Construct email content without using a template
+            subject = 'Booking Confirmation'
+            from_email = 'sportigoplayspot@gmail.com'  # Replace with your email
+            to_email = user_email
+            
+            email_content = (
+                f"Dear {user_email},\n\n"
+                f"Your booking with ID: {booking.id} has been confirmed.\n"
+                f"Start Date: {start_date}\n"
+                f"End Date: {end_date}\n"
+                f"Total Cost: {total_cost}\n\n"
+                "Thank you for booking with us!\n\n"
+                "Regards,\nThe Sportigo Team"
+            )
+            
+            # Send the email
+            email = EmailMultiAlternatives(subject, email_content, from_email, [to_email])
+            email.send()
+            
+            messages.success(request, 'Payment successful! Booking confirmed. Email sent.')
+            return redirect('club_booking_history')
+        else:
+            messages.error(request, 'Payment unsuccessful. Please try again.')
+            return redirect('turf_detail2', turf_id=turf_id)
+        
+    return render(request, 'confirmation2.html', {'payment': payment})
+
+
+
+
+def turf_detail2(request, turf_id):
+    if request.method == 'POST':
+        start_date = request.POST.get('start_date')
+        end_date = request.POST.get('end_date')
+
+        if not start_date or not end_date:
+            return HttpResponse("Please select start and end dates")
+
+        turf = get_object_or_404(TurfListing, id=turf_id)
+
+        # Calculate total cost based on the duration of the booking
+        start_date_obj = datetime.strptime(start_date, '%Y-%m-%d')
+        end_date_obj = datetime.strptime(end_date, '%Y-%m-%d')
+        duration_days = (end_date_obj - start_date_obj).days + 1  # Including the end date
+        total_cost = duration_days * turf.price_per_day  # Assuming price_per_day is a field in TurfListing model
+
+        # Check for existing bookings during the selected period
+        existing_bookings = ClubBooking.objects.filter(
+            Q(start_date__range=[start_date, end_date]) | Q(end_date__range=[start_date, end_date]),
+            turf_listing=turf
+        )
+
+        if existing_bookings.exists():
+            messages.error(request, 'This turf is already booked for the selected period. Please choose different dates.')
+            return redirect('turf_detail2', turf_id=turf_id)
+
+        # Storing booking information in session
+        request.session['start_date'] = start_date
+        request.session['end_date'] = end_date
+        request.session['turf_id'] = turf_id
+        request.session['total_cost'] = float(total_cost)
+        
+
+
+        # Redirect to the confirmation page
+        context = {
+            'turf': turf,
+            'start_date': start_date,
+            'end_date': end_date,
+            'total_cost': total_cost,
+            'amount': total_cost * 100,
+        }
+        return render(request, 'confirmation2.html', context)
+
+    turf = get_object_or_404(TurfListing, id=turf_id)
+    context = {
+        'turf': turf,
+    }
+    return render(request, 'turf_detail2.html', context)
+
+
+
+
+
+
+
+
+
 from django.contrib import messages
 
 @login_required
 def booking_history(request):
-    # Retrieve the user's booking history
+    today = datetime.now().date()
     user_bookings = Booking.objects.filter(user=request.user).order_by('-created_at')
     messages_list = messages.get_messages(request)
     context = {
         'user_bookings': user_bookings,
-        'messages': messages_list
+        'messages': messages_list,
+        'today': today
     }
 
     return render(request, 'booking_history.html', context)
+
+
+from django.http import HttpResponse
+from django.template.loader import render_to_string
+from django.shortcuts import get_object_or_404
+from .models import ClubBooking
+
+def download_receipt(request, booking_id):
+    # Fetch the booking from the database
+    booking = get_object_or_404(ClubBooking, id=booking_id)
+    
+    # Render the receipt template with booking data
+    receipt_html = render_to_string('receipt_template.html', {'booking': booking})
+    
+    # Create an HTTP response with the receipt content as a file download
+    response = HttpResponse(receipt_html, content_type='text/html')
+    response['Content-Disposition'] = f'attachment; filename="receipt_{booking_id}.html"'
+    
+    return response
+
+
+
+def club_booking_history(request):
+    if 'email' in request.session:
+        # Retrieve the email from the session
+        email = request.session['email']
+        
+        try:
+            # Fetch the ClubUser instance associated with the email
+            club_user = ClubUser.objects.get(email=email)
+            
+            # Fetch bookings associated with the ClubUser
+            user_bookings = ClubBooking.objects.filter(user=club_user).order_by('-created_at')
+            messages_list = messages.get_messages(request)
+            context = {
+                'user_bookings': user_bookings,
+                'messages': messages_list,
+            }
+
+            return render(request, 'club_booking_history.html', context)
+        except ClubUser.DoesNotExist:
+            # Handle the case where the ClubUser does not exist for the given email
+            # You can return an appropriate response or redirect the user
+            return HttpResponse("ClubUser does not exist for the given email")
+    else:
+        return redirect('index')
+
+
+
 
 
 from django.shortcuts import get_object_or_404
@@ -745,6 +1300,97 @@ def search(request):
             })
 
     return JsonResponse(search_results, safe=False)
+
+
+
+
+
+from django.shortcuts import render, get_object_or_404
+from django.http import HttpResponse
+from .models import TurfListing, TurfProvider
+import requests
+
+
+
+def weather_prediction(request):
+    if request.method == 'GET':
+        # Get turf id from the query parameters
+        turf_id = request.GET.get('turf_id')
+        # Fetch the turf object based on the turf id
+        turf = get_object_or_404(TurfListing, id=turf_id)
+
+        # Get the turf provider for this turf
+        turf_provider = turf.turf_provider
+
+        # Extract latitude and longitude from the location field
+        location = turf_provider.location
+        latitude, longitude = location.split(',')
+
+        # Get the date for weather prediction
+        prediction_date = request.GET.get('prediction_date')  # Assuming date is passed as a query parameter
+        
+        # Debugging: Print out selected date, turf ID, and latitude longitude
+        print("Selected Date:", prediction_date)
+        print("Turf ID:", turf_id)
+        print("Latitude:", latitude)
+        print("Longitude:", longitude)
+
+        # Call OpenWeatherMap API to get weather forecast
+        base_url = "https://api.openweathermap.org/data/2.5/weather"
+        api_key = "096644bc7a21e69d184ac042caeccf4f"  
+        params = {
+            "lat": latitude.strip(),
+            "lon": longitude.strip(),
+            "appid": api_key,
+            "units": "metric"  # You can change units as per your preference
+        }
+
+        response = requests.get(base_url, params=params)
+        data = response.json()
+        print("API Response:", data)
+
+        # Check if the API response contains weather data
+        if 'main' in data and 'weather' in data:
+            weather_data = {
+                'name': data['name'],  # Location name
+                'temperature': data['main']['temp'],  # Temperature in Celsius
+                'description': data['weather'][0]['description'],  # Weather description
+                'wind_speed': data['wind']['speed'],  # Wind speed in m/s
+            }
+            # Pass weather data to the template
+            context = {
+                'turf': turf,
+                'weather_data': weather_data,
+                'date' : datetime.strptime(prediction_date,'%Y-%m-%d').date(),
+            }
+            return render(request, 'weather_prediction.html', context)
+        else:
+            return HttpResponse("Weather data not available for the selected location.")
+
+    else:
+        return HttpResponse("Method not allowed.")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

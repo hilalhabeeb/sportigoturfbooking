@@ -14,20 +14,143 @@
     <link rel=stylesheet type=text/css href="{% static 'css/layerslider.css' %}">
     <script src="{% static 'js/vendor/modernizr.js' %}"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <style>
+        .registration-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start; /* Align items at the top */
+        }
+
+        .steps {
+            flex: 1;
+            background-color: #f0f0f0;
+            padding: 20px;
+            height: 595px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Add shadow for depth */
+        }
+
+        .steps h3 {
+            margin-bottom: 20px;
+            font-size: 24px; /* Increased font size */
+            color: #333;
+        }
+
+        .steps ol {
+            padding-left: 20px;
+        }
+
+        .steps li {
+            margin-bottom: 10px;
+            list-style-type: decimal;
+            color: #555;
+            font-size: 18px; /* Increased font size */
+            line-height: 1.6; /* Adjusted line height for better readability */
+        }
+
+        .form-container {
+            flex: 2;
+        }
+
+        .registration-form {
+            background-color: #f0f0f0;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Add shadow for depth */
+            height: 100%; /* Set height to match the steps container */
+        }
+
+        .registration-form .form-group {
+            margin-bottom: 20px;
+        }
+
+        .registration-form label {
+            display: block;
+            font-weight: bold;
+        }
+
+        .registration-form input[type="text"],
+        .registration-form input[type="email"],
+        .registration-form input[type="tel"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .registration-form button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #e74c3c;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .registration-form button:hover {
+            background-color: #c0392b;
+        }
+/* Apply styles to the language menu container */
+#languageMenu {
+  /* Your styles here */
+  /* For example: */
+  border: 1px solid #fff; /* White border */
+  background-color: #000; /* Black background */
+  color: #fff; /* White text color */
+  padding: 5px;
+  float: right; /* Float the menu to the right */
+  margin-left: 20px;
+  margin-top: 5px; /* Add some left margin for spacing */
+}
+
+/* Apply styles to the language options */
+#languageMenu option {
+  /* Your styles here */
+  /* For example: */
+  background-color: #000; /* Black background */
+  color: #fff; /* White text color */
+}
+
+/* Apply styles to the active language */
+#languageMenu option:checked {
+  /* Your styles here */
+  /* For example: */
+  font-weight: bold;
+}
+
+
+    </style>
 </head>
 <body>
 
+    {% if registration_success %}
+        <script>
+            alert("Registration successful. Kindly wait for the admin's approval.");
+        </script>
+    {% endif %}
+    
 <div class=wrapper>
     <header class=header-main>
         <div class=header-upper>
             <div class=container>
                 <div class=row>
                     <ul>
-                        <li><a href="{% url 'signup' %}" >Signup</a></li>
+                        <li>{{languageMenu|safe}}</li>
+                      
+                    </ul>
+
+                    
+                    <ul>
+                        <li><a href="{% url 'signup' %}" >{{index_signup}}</a></li>
                       
                     </ul>
                     <ul>
-                        <li><a href="{% url 'user_login' %}" >login</a></li>
+                        <li><a href="{% url 'user_login' %}" >{{index_login}}</a></li>
                       
                     </ul>
                 </div>
@@ -46,14 +169,14 @@
                                 </div>
                                 <div class=nav-menu>
                                     <ul class="nav navbar-nav menu-bar">
-                                        <li><a href="{% url 'index' %}" class=active>Home <span></span> <span></span>
+                                        <li><a href="{% url 'index' %}" class=active>{{index_Home}} <span></span> <span></span>
                                             <span></span> <span></span></a></li>
-                                        <li><a href="{% url 'about' %}">about <span></span> <span></span> <span></span>
+                                        <li><a href="{% url 'about' %}">{{index_about}} <span></span> <span></span> <span></span>
                                             <span></span></a></li>
                                        
-                                        <li><a href="{% url 'user_login' %}">book Tickets <span></span> <span></span>
+                                        <li><a href="{% url 'user_login' %}">{{index_bookTickets}}<span></span> <span></span>
                                             <span></span> <span></span></a></li>
-                                        <li><a href="{% url 'contact' %}">contact <span></span> <span></span> <span></span>
+                                        <li><a href="{% url 'contact' %}">{{index_contact}}<span></span> <span></span> <span></span>
                                             <span></span></a></li>
                                         
                                     </ul>
@@ -88,14 +211,14 @@
                 </h2>
 
             <h2 class="ls-l bannertext01 italic01 layercontent04"
-                data-ls="offsetxin:left; scalexin:9; durationin: 4000;">Let the</h2><h4
+                data-ls="offsetxin:left; scalexin:9; durationin: 4000;">{{index_Letthe}}</h2><h4
                     class="ls-l bannertext02 layercontent05" data-ls="offsetxin:left; rotatexin:90 ; durationin: 4500;">
-                World</h4>
+                    {{index_World}}</h4>
 
             <h2 class="ls-l bannertext01 layercontent06" style="left: 87%; top:760px;"
-                data-ls="offsetxin:left; flipxin:90 ; durationin: 5000;">play<sup>!</sup></h2><h6
+                data-ls="offsetxin:left; flipxin:90 ; durationin: 5000;">{{index_play}}<sup>!</sup></h2><h6
                     class="ls-l bannertext03 layercontent07" data-ls="offsetxin:left; flipxin:90 ; durationin: 6000;">
-                @sportigo</h6></div>
+                    {{index_ssportigo}}</h6></div>
     </div>
     <div class=banner-text>
         <div class=container>
@@ -104,25 +227,19 @@
     </div>
     <section class="booking bg-smallwhite">
         <div class=container>
-            <div class=booking-fig><h2>PLAY WITH US ! </h2></div>
-            <div class=booking-content><a href=# class="btn btn-red">Book slot</a> <a href="{% url 'turfproviderreg' %}"
-                                                                                        class="btn btn-white">TO get listed</a></div>
+            <div class=booking-fig><h2>{{index_playwith}}</h2></div>
+            <div class=booking-content><a href=# class="btn btn-red">{{index_Bookslot}}</a> <a href="{% url 'turfproviderreg' %}"
+                                                                                        class="btn btn-white">{{index_TOgetlisted}}</a></div>
         </div>
     </section>
     <section class=about>
         <div class=container>
-            <div class=row><h2 class=heading>About <span>scc</span></h2>
+            <div class=row><h2 class=heading>{{index_About1}} <span>{{index_sportigo}}</span></h2>
 
                 <div class=about-wrap>
-                    <div class="tab-content nav-content"><p role=tabpanel class="tab-pane fade" id=matches>Sportigo is the ultimate turf booking app designed to cater to football enthusiasts everywhere. 
-                        With Sportigo, you can easily discover and reserve nearby football turfs in various locations. Our user-friendly interface and real-time availability 
-                        updates ensure that you can quickly find the perfect pitch for your game, check prices, and secure your booking with just a few taps. Dont waste time searching for
-                         available pitches – let Sportigo connect you to the best football turfs for your matches</p>
+                    <div class="tab-content nav-content"><p role=tabpanel class="tab-pane fade" id=matches>{{index_des1}}</p>
 
-                        <p role=tabpanel class="tab-pane active fade in" id=static>Sportigo is the ultimate turf booking app designed to cater to football enthusiasts everywhere. 
-                            With Sportigo, you can easily discover and reserve nearby football turfs in various locations. Our user-friendly interface and real-time availability 
-                            updates ensure that you can quickly find the perfect pitch for your game, check prices, and secure your booking with just a few taps. Dont waste time searching for
-                             available pitches – let Sportigo connect you to the best football turfs for your matches</p>
+                        <p role=tabpanel class="tab-pane active fade in" id=static>{{index_des1}}</p>
 
                         <p role=tabpanel class="tab-pane fade" id=traning>Sportigo is the ultimate turf booking app designed to cater to football enthusiasts everywhere. 
                             With Sportigo, you can easily discover and reserve nearby football turfs in various locations. Our user-friendly interface and real-time availability 
@@ -140,57 +257,115 @@
             </div>
         </div>
     </section>
-    <section class=latestResult>
-        <div class=container>
-            <div class=row><h2 class=heading>latest <span>result</span></h2>
-
-                <div class=latestResult-wrap><h4>uefa champions league</h4>
-
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Enim, nemo tenetur magnam eveniet sed
-                        aut, iste facere quisquam, cumque, vitae quis deleniti animi. A ipsum iusto, temporibus, beatae
-                        porro nemo.</p></div>
+    <section class="latestResult">
+        <div class="container">
+            <div class="row">
+                <h2 class="heading">{{index_clubdes}}</h2>
+                <div class="latestResult-wrap">
+                    <h4>Join Our Club Community for Exclusive Perks!</h4>
+                    <p>{{index_sp1}}</p>
+                </div>
                 <div class="result clearfix">
-                    <div class=result-details>
-                        <div class=content><h4>fc Dragons</h4>
-
-                            <p>lose</p>
-
-                            <p>Shannon Skelly(23)</p></div>
-                        <div class=figure>
-                            <div class=team-logo>
-                                <div style=background:url(images/team-logo/logo01.png) class=teamLogoImg></div>
+                    <div class="result-details">
+                        <div class="content">
+                            <h4>{{index_Register}}</h4>
+                            <p>{{index_FillTheForm}}</p>
+                        </div>
+                        <div class="figure">
+                            <div class="team-logo">
+                                <div style="background:url(images/team-logo/your_club_logo.png)" class="teamLogoImg"></div>
                             </div>
                         </div>
                     </div>
-                    <div class=result-count>
-                        <div class=count-number><span class=lose-team>1</span> <span>-</span> <span
-                                class=win-team>3</span></div>
-                        <div class=dateTime>
-                            <div class=dateTime-container><span class=date>may 16,2015</span> <span
-                                    class=time>15:30pm</span></div>
-                            <div class=country-wrap><span class=field>wbeysley stadium</span> <span class=country>(london)</span>
+                    <div class="result-count">
+                        <div class="count-number">
+                            <span class="lose-team">100+</span> <span></span> <span class="win-team"></span>
+                        </div>
+                        <div class="dateTime">
+                            <div class="dateTime-container">
+                                <span class="date">{{index_Clubs}}</span> <span class="time">{{index_arein}}</span>
+                            </div>
+                            <div class="country-wrap">
+                                <span class="field">{{index_whyareyouwaiting}}</span> <span class="country">{{index_Explore}}</span>
                             </div>
                         </div>
                     </div>
-                    <div class=result-details>
-                        <div class="content contentresult"><h4>fc Zulu Ninjas</h4>
-
-                            <p>win</p>
-
-                            <p>Leland Lagos(29)</p>
-
-                            <p>Lelnd Lagos(39)</p></div>
+                    <div class="result-details">
+                        <div class="content contentresult">
+                            <h4>{{index_get}}</h4>
+                            <p>{{index_exp}}</p>
+                        </div>
                         <div class="figure figresult">
-                            <div class=team-logo>
-                                <div style=background:url(images/team-logo/logo02.png) class=teamLogoImg></div>
+                            <div class="team-logo">
+                                <div style="background:url(images/team-logo/opposing_club_logo.png)" class="teamLogoImg"></div>
                             </div>
                         </div>
                     </div>
-                    <div class=center><a href=# class="btn btn-red score-btn">Score board</a></div>
+                    <div class="center">
+                        <a href="#registrationForm" class="btn btn-red score-btn" id="joinNowBtn">{{index_join}}</a>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
+    <br>
+
+    <div id="registrationForm">
+        <div class="registration-content">
+            <div class="steps">
+                <h3>Steps to Register:</h3>
+                <ol>
+                    <li>Fill the form</li>
+                    <br><br>
+                    <li>Wait for verification</li>
+                    <br><br>
+                    <li>Login with the password given through email</li>
+                </ol>
+            </div>
+            <div class="form-container">
+                <div class="form-container">
+
+                    <form id="clubUserForm" method="post" class="registration-form" enctype="multipart/form-data" action="{% url 'register_club_user' %}">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="clubID">Club ID:</label>
+                            <input type="text" id="clubID" name="clubID" required>
+                            <span id="id-error" class="error-message"></span> <!-- Error message for phone -->
+                        </div>
+                        <div class="form-group">
+                            <label for="clubName">Club Name:</label>
+                            <input type="text" id="clubName" name="clubName" required>
+                            <span id="name-error" class="error-message"></span> <!-- Error message for phone -->
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email:</label>
+                            <input type="email" id="email" name="email" required>
+                            <span id="email-error" class="error-message"></span> <!-- Error message for email -->
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Phone:</label>
+                            <input type="tel" id="phone" name="phone" required>
+                            <span id="phone-error" class="error-message"></span> <!-- Error message for phone -->
+                        </div>
+                        <div class="form-group">
+                            <label for="address">Address:</label>
+                            <input type="text" id="address" name="address" required>
+                            <span id="address-error" class="error-message"></span> <!-- Error message for address -->
+                        </div>
+                        <div class="form-group">
+                            <label for="clubLicense">Club License (Upload Document):</label>
+                            <input type="file" id="clubLicense" name="clubLicense" accept="application/pdf, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document" required>
+                            <span id="clubLicense-error" class="error-message"></span> <!-- Error message for club license -->
+                        </div>
+                        <button type="submit">Submit</button>
+                    </form>
+                    
+            </div>
+        </div>
+    </div></div>
+    
+    
+    
     <section class=matchSchedule>
         <div class=container>
             <div class=row><h2 class=heading>match <span>schedule</span></h2>
@@ -622,6 +797,163 @@
 </div>
 <script src="{% static 'js/vendor/vendor.js' %}"></script>
 <script src="{% static 'js/main.js' %}"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Hide the registration form by default
+        document.getElementById("registrationForm").style.display = "none";
+
+        // Add event listener to the "Join Now" button
+        document.getElementById("joinNowBtn").addEventListener("click", function() {
+            // Show the registration form when the button is clicked
+            document.getElementById("registrationForm").style.display = "block";
+        });
+    });
+</script>
+
+
+<script>
+    const email = document.getElementById('email');
+    const phone = document.getElementById('phone');
+    const emailError = document.getElementById('email-error');
+    const phoneError = document.getElementById('phone-error');
+
+    const clubID = document.getElementById('clubID');
+    const clubName = document.getElementById('clubName');
+    const address = document.getElementById('address');
+    const clubLicense = document.getElementById('clubLicense');
+    const clubIDError = document.getElementById('id-error');
+    const clubNameError = document.getElementById('name-error');
+    const addressError = document.getElementById('address-error');
+    const clubLicenseError = document.getElementById('clubLicense-error');
+
+
+
+        // Function to validate email
+        function validateEmail() {
+    var emailValue = email.value.trim();
+    // This regular expression checks if the email address is a valid Gmail or Yahoo address
+    var emailRegex = /^(?!.*\.{2,})(?!.*@{2,})[A-Za-z0-9._%+-]+@(gmail\.com|yahoo\.com|ajce\.in|outlook\.com|mca.ajce\.in|amaljyothi\.ac\.in)$/;
+
+    if (!emailRegex.test(emailValue) || emailValue.indexOf('.') < emailValue.indexOf('@')) {
+        emailError.textContent = "Please enter a valid email address.";
+        return false;
+    } else {
+        emailError.textContent = "";
+        emailvalid();
+        return true;
+    }
+}
+
+
+    // Function to validate phone number
+    function validatePhone() {
+    const phoneValue = phone.value.trim();
+    const phoneRegex = /^[6-9]\d{9}$/; // Matches a 10-digit phone number starting with 6-9
+
+    if (!phoneValue.match(phoneRegex)) {
+        phoneError.textContent = "Please enter a valid 10-digit Indian mobile number starting with 6-9.";
+        return false;
+    } else if (/^(\d)\1*$/.test(phoneValue)) {
+        phoneError.textContent = "All digits in the mobile number cannot be the same.";
+        return false;
+    } else if (phoneValue.substr(-9) === '000000000') {
+        phoneError.textContent = "The last 9 digits of the mobile number cannot be all zeros.";
+        return false;
+    } else {
+        phoneError.textContent = "";
+        return true;
+    }
+}
+
+    // Function to validate club ID
+// Function to validate club ID
+function validateClubID() {
+    const clubIDValue = clubID.value.trim();
+    // Regular expression to match only numeric characters
+    const numericRegex = /^[0-9]+$/;
+    // Check if the club ID contains only numeric characters
+    if (!numericRegex.test(clubIDValue)) {
+        clubIDError.textContent = "Club ID must contain only numbers.";
+        return false;
+    } else if (clubIDValue === '') {
+        clubIDError.textContent = "Club ID is required.";
+        return false;
+    } else {
+        clubIDError.textContent = "";
+        return true;
+    }
+}
+
+
+    // Function to validate club name
+    function validateClubName() {
+        const clubNameValue = clubName.value.trim();
+        // You can define your validation logic here
+        if (clubNameValue === '') {
+            clubNameError.textContent = "Club Name is required.";
+            return false;
+        } else {
+            clubNameError.textContent = "";
+            return true;
+        }
+    }
+
+    // Function to validate address
+    function validateAddress() {
+        const addressValue = address.value.trim();
+        // You can define your validation logic here
+        if (addressValue === '') {
+            addressError.textContent = "Address is required.";
+            return false;
+        } else {
+            addressError.textContent = "";
+            return true;
+        }
+    }
+
+    // Function to validate club license
+    function validateClubLicense() {
+        const clubLicenseValue = clubLicense.value.trim();
+        // You can define your validation logic here
+        if (clubLicenseValue === '') {
+            clubLicenseError.textContent = "Club License document is required.";
+            return false;
+        } else {
+            clubLicenseError.textContent = "";
+            return true;
+        }
+    }
+
+    // Add event listeners for real-time validation
+    clubID.addEventListener('input', validateClubID);
+    clubName.addEventListener('input', validateClubName);
+    address.addEventListener('input', validateAddress);
+    clubLicense.addEventListener('input', validateClubLicense);
+    email.addEventListener('input', validateEmail);
+    phone.addEventListener('input', validatePhone);
+
+    // Validate all fields before form submission
+    function validateForm() {
+        return (
+            validateEmail() &&
+            validatePhone() &&
+            validateClubID() &&
+            validateClubName() &&
+            validateAddress() &&
+            validateClubLicense()
+        );
+    }
+
+    // Add submit event listener to the form
+    document.getElementById('clubUserForm').addEventListener('submit', function (event) {
+        if (!validateForm()) {
+            // Prevent form submission if validation fails
+            event.preventDefault();
+        }
+    });
+</script>
+
+
 </body>
 
 </html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Prediction</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #2c3e50;
+        }
+
+        h2 {
+            color: #2980b9;
+        }
+
+        p {
+            color: #34495e;
+            margin-bottom: 10px;
+        }
+
+        .weather-icon {
+            margin-top: 20px;
+        }
+
+        .weather-icon img {
+            width: 100px;
+            height: 100px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Weather Prediction</h1>
+        <div>
+            <h2>Turf Location: {{ turf.turf_provider.location }}</h2>
+            <p>Date: {{ date }}</p>
+            <p>Location: {{ weather_data.name }}</p>
+            <p>Temperature: {{ weather_data.temperature }}°C</p>
+            <p>Description: {{ weather_data.description }}</p>
+            <p>Wind Speed: {{ weather_data.wind_speed }} m/s</p>
+
+            <!-- "Back to Booking Page" button -->
+            <button onclick="goBack()">Back to Booking Page</button>
+        </div>
+    </div>
+
+    <script>
+        // Function to navigate back to the booking page
+        function goBack() {
+            window.history.back();
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,438 @@
+
+
+
+{% load static %}
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    {% load static %}
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    </head>
+    
+        <!-- jQuery UI library -->
+        <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+        <meta charset="utf-8">
+        <meta name="description" content="">
+        <meta name="viewport"
+              content="width=device-width, height=device-height, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+        <title>Soccer Club</title>
+        <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}">
+        <link rel="stylesheet" href="{% static 'css/vendor.css' %}">
+        <link rel="stylesheet" href="{% static 'css/style.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'css/layerslider.css' %}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        
+        <script src="{% static 'js/vendor/modernizr.js' %}"></script>
+    
+        <title>{{ turf.turf_name }} Details</title>
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
+    
+    
+    
+            body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+                background-color: #f2f2f2;
+                display: flex;
+                flex-direction: column;
+                min-height: 100vh;
+                font-family: 'Times New Roman', serif;
+                
+            }
+    
+    
+            footer {
+                height: 50px;
+                font-family: 'Times New Roman', serif;
+                background-color: #220b0b;
+            }
+    
+    
+            .content {
+                background-color: #fff;
+                padding: 20px;
+                flex: 1; /* Push the footer to the bottom */
+            }
+    
+            .turf-image-container {
+                position: relative;
+            }
+    
+            .turf-slider {
+                position: relative;
+                max-width: 100%;
+                overflow: hidden;
+            }
+
+            .turf-image {
+                width: 100%;
+                height: 65vh;
+                object-fit: cover;
+                display: none;
+            }
+
+            .turf-image.active {
+                display: block;
+            }
+    
+            .turf-item {
+                text-align: center;
+                margin: 20px;
+            }
+    
+            .book-button {
+                background-color: #007bff;
+                color: white;
+                border: none;
+                padding: 10px 20px;
+                border-radius: 5px;
+                cursor: pointer;
+                text-decoration: none;
+                display: inline-block;
+                margin-top: 20px;
+            }
+    
+            .book-button:hover {
+                background-color: #0056b3;
+            }
+    
+            .turf-logo {
+                width: 120px;
+                height: 120px;
+                background-color: #333;
+                border: 3px solid rgb(255, 255, 255);
+                border-radius: 50%;
+                position: absolute;
+                bottom: -45px; /* Adjust the positioning as needed */
+                left: 50%;
+                transform: translateX(-50%);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+    
+            .turf-logo img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                border-radius: 50%;
+            }
+    
+            h1 {
+                font-size: 24px;
+                text-align: center;
+                font-family: 'Times New Roman', serif;
+            }
+    
+            p {
+                text-align: center;
+                font-family: 'Times New Roman', serif;
+            }
+    
+            .booking-container {
+                text-align: center;
+                margin-top: 20px;
+            }
+    
+            label {
+                font-size: 18px;
+                font-family: 'Times New Roman', serif;
+            }
+    
+            input[type="date"] {
+                width: 100%;
+                padding: 10px;
+                margin-top: 5px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                font-size: 16px;
+                font-family: 'Times New Roman', serif;
+            }
+    
+            .time-slots {
+                text-align: center;
+                margin-top: 20px;
+                font-family: 'Times New Roman', serif;
+            }
+    
+            select {
+                font-size: 16px;
+                padding: 10px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                width: 100%;
+                font-family: 'Times New Roman', serif;
+            }
+            .time-slots {
+                text-align: center;
+                margin-top: 20px;
+                font-family: 'Times New Roman', serif;
+            }
+    
+            .time-slot-button {
+                background-color: #007bff;
+                color: white;
+                border: none;
+                padding: 10px 20px;
+                border-radius: 5px;
+                cursor: pointer;
+                text-decoration: none;
+                display: inline-block;
+                margin: 10px;
+                font-family: 'Times New Roman', serif;
+            }
+    
+            .time-slot-button:hover {
+                background-color: #0056b3;
+            }
+            .prev-slide,
+            .next-slide {
+                font-size: 24px;
+                width: 50px;
+                height: 50px;
+                border: none;
+                background-color: #000101; /* Change the background color */
+                color: white; /* Change the text color */
+                border-radius: 50%; /* Make the buttons circular */
+                cursor: pointer;
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+                z-index: 1; /* Ensure buttons are above the images */
+            }
+
+            .prev-slide:hover,
+            .next-slide:hover {
+                background-color: #1e3855; /* Change background color on hover */
+            }
+
+            .prev-slide {
+                left: 10px; /* Position the previous slide button */
+            }
+
+            .next-slide {
+                right: 10px; /* Position the next slide button */
+            }
+            
+        </style>
+    </head>
+</head>
+<body>
+    <main>
+        <div class="wrapper">
+                <header class="header-main">
+                    <div class="header-upper">
+                        <div class="container">
+                            <div class="row">
+                                <ul>
+                                    <li><a href="#">©SPORTIGO</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="header-lower clearfix">
+                        <div class="container">
+                            <div class="row">
+                                <h1 class="logo"><a href="#"><img src="{% static 'images/logo12.png' %}" width="100"
+                                            height="100" alt="image"></a></h1>
+                                <div class="menubar">
+                                    <nav class="navbar">
+                                        <div class="nav-wrapper">
+                                            <div class="navbar-header">
+                                                <button type="button" class="navbar-toggle"><span class="sr-only">Toggle navigation</span>
+                                                    <span class="icon-bar"></span></button>
+                                            </div>
+                                            <div class="nav-menu">
+                                                <ul class="nav navbar-nav menu-bar">
+                                                    <li><a href="{% url 'clubhome' %}" >Home <span></span> <span></span>
+                                                            <span></span> <span></span></a></li>
+                                                    <li><a href="{% url 'club_booking_history' %}">History <span></span> <span></span> <span></span>
+                                                            <span></span></a></li>
+
+        
+
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </nav>
+                                </div>
+                                <div class="social"><a href="https://www.facebook.com/hilal.habeeb.1?mibextid=ZbWKwL"
+                                        class="facebook"><i class="fa fa-facebook"></i></a> <a
+                                        href="https://twitter.com/itobuztech" class="twitter"><i class="fa fa-twitter"></i></a>
+                                    <a href="https://www.behance.net/" class="behance"><i class="fa fa-behance"></i></a></div>
+                            </div>
+                        </div>
+                    </div>
+                </header>
+
+        </div>
+
+        <br><br><br><br>
+
+        <div class="content">
+            <div class="turf-details">
+                <div class="turf-image-container" style="position: relative;">
+                    <div class="turf-slider">
+                        {% for image in turf.images.all %}
+                            <img class="turf-image {% if forloop.first %}active{% endif %}" src="{{ image.image.url }}" alt="Turf Image">
+                        {% endfor %}
+                    </div>
+                    <div class="turf-logo">
+                        <img src="{% static 'images/logo12.png' %}" alt="Turf Logo">
+                    </div>
+                    <button class="prev-slide" style="position: absolute; top: 50%; left: 10px; transform: translateY(-50%);">&#10094;</button>
+                    <button class="next-slide" style="position: absolute; top: 50%; right: 10px; transform: translateY(-50%);">&#10095;</button>
+                </div>
+            </div>
+        </div>
+        
+
+                <div class="turf-details" style="float: left; width: 50%; margin-bottom: 0;">
+                    <div style="border: 0px solid #621e1e; border-radius: 5px; padding: 80px; margin: 10px auto; max-width: 1000px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                            <p><i class="fas fa-map-marker-alt"></i> {{ turf.location }}</p>
+                            <p><i class="fas fa-location-arrow"></i> {{ turf.turf_name }}</p>
+                            <p><i class="fas fa-rupee-sign"></i> {{ turf.price_per_day }} /day</p>
+                        </div>
+                        <p><strong>Sports Type:</strong> {{ turf.sports_type }}</p>
+                        <p><strong>Description:</strong> {{ turf.description }}</p>
+                        <p><strong>Available From:</strong> {{ turf.available_from }}</p>
+                        <p><strong>Available To:</strong> {{ turf.available_to }}</p>
+                    </form><br><br>
+                    <h4>Check Weather Condition </h4>
+                    <form action="{% url 'weather_prediction' %}" method="GET">
+                        <input type="hidden" name="turf_id" value="{{ turf.id }}">
+                        <input type="date" id="prediction_date" name="prediction_date" required>
+                        <button type="submit">Predict Weather</button>
+                    </form>
+                    </div>
+
+                </div>
+                
+    <div class="booking-section" style="float: right; width: 50%; margin-top: -70px;">
+        <section class="turf-booking">
+            <div class="booking-container" style="border: 1px solid #ffffff; border-radius: 5px; padding: 50px; margin: 10px auto; max-width: 1000px;">
+                <h2>Book this Turf</h2>
+                <form id="booking-form" method="post">
+                    {% csrf_token %}
+                    <label for="booking-start-date">Start Date:</label>
+                    <input type="date" id="booking-start-date" name="start_date" required>
+                    <label for="booking-end-date">End Date:</label>
+                    <input type="date" id="booking-end-date" name="end_date" required>
+                    <button id="book-now-button" class="book-button" type="submit">Book Now</button>
+
+
+                {% if messages %}
+                <ul class="messages">
+                    {% for message in messages %}
+                        <h4><li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li></h4>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </div>
+        </section>
+    </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>© 2023 Turf Provider, Inc.</p>
+    </footer>
+    <script src="{% static 'js/vendor/vendor.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+
+
+
+
+    <script>
+        // Calculate the start date (5 days from today)
+        var startDate = new Date();
+        startDate.setDate(startDate.getDate() + 5);
+        
+        // Calculate the end date (10 days from the start date)
+        var endDate = new Date(startDate);
+        endDate.setDate(startDate.getDate() + 10);
+        
+        // Format the start and end dates as YYYY-MM-DD
+        var startDateFormatted = startDate.toISOString().split('T')[0];
+        var endDateFormatted = endDate.toISOString().split('T')[0];
+        
+        // Set the start and end dates in the input fields
+        document.getElementById("booking-start-date").setAttribute("min", startDateFormatted);
+        document.getElementById("booking-start-date").setAttribute("max", endDateFormatted);
+        document.getElementById("booking-end-date").setAttribute("min", startDateFormatted);
+        document.getElementById("booking-end-date").setAttribute("max", endDateFormatted);
+    
+        // Function to update the minimum allowed value for the end date input field
+        function updateMinEndDate() {
+            var startDateValue = document.getElementById("booking-start-date").value;
+            var endDateInput = document.getElementById("booking-end-date");
+            
+            // Set the minimum allowed value for the end date input field to be equal to the selected start date
+            endDateInput.min = startDateValue;
+            
+            // Ensure that the end date is greater than or equal to the start date
+            if (endDateInput.value < startDateValue) {
+                endDateInput.value = startDateValue;
+            }
+        }
+    
+        // Call the function when the start date input field changes
+        document.getElementById("booking-start-date").addEventListener("change", updateMinEndDate);
+    </script>
+    
+    
+    <script>
+        // Get today's date
+        const today = new Date().toISOString().split('T')[0];
+    
+        // Set the minimum date for the input field to be today
+        document.getElementById('prediction_date').min = today;
+    </script>
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var slideIndex = 0;
+            var slides = $(".turf-image");
+            var totalSlides = slides.length;
+    
+            // Show the first image initially
+            showSlide(slideIndex);
+    
+            // Function to display the selected slide
+            function showSlide(index) {
+                if (index >= totalSlides) {
+                    slideIndex = 0;
+                }
+                if (index < 0) {
+                    slideIndex = totalSlides - 1;
+                }
+    
+                slides.removeClass("active");
+                slides.eq(slideIndex).addClass("active");
+            }
+    
+            // Functionality for the next slide button
+            $(".next-slide").click(function () {
+                slideIndex++;
+                showSlide(slideIndex);
+            });
+    
+            // Functionality for the previous slide button
+            $(".prev-slide").click(function () {
+                slideIndex--;
+                showSlide(slideIndex);
+            });
+        });
+    </script>
+</body>
+</html>

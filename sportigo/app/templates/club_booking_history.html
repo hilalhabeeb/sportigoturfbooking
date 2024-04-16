@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Booking History</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f5f5f5;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+    }
+    
+    /* Add styles for the main content */
+    main {
+        flex: 1 0 auto;
+    }
+    
+    /* Add styles for the page footer */
+    footer {
+        flex-shrink: 0;
+        background-color: #000000;
+        color: #fff;
+        padding: 10px;
+        text-align: center;
+    }
+    
+    /* Add styles for the page header */
+    h1 {
+        color: #333;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    
+    /* Add styles for the table */
+    table {
+        border-collapse: collapse;
+        width: 100%;
+        background-color: #fff;
+        border-radius: 5px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    }
+    
+    table th, table td {
+        padding: 10px;
+        text-align: left;
+    }
+    
+    /* Add styles for table header */
+    thead {
+        background-color: #333;
+        color: #fff;
+    }
+    
+    /* Add styles for table rows */
+    tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+    
+    /* Add styles for the "No bookings found" message */
+    td[colspan="5"] {
+        text-align: center;
+        padding: 20px;
+        background-color: #fff;
+    }
+    
+    /* Add styles for the page footer */
+    
+    /* Add styles for the site logo */
+    .logo {
+        display: block;
+        margin: 0 auto;
+        width: 100px;
+        height: 100px;
+    }
+    
+    /* Add styles for the site navigation */
+    .nav {
+        list-style: none;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 0;
+        padding: 25px;
+        background-color: #333;
+    
+    }
+    
+    .nav li {
+        margin: 0 10px;
+    }
+    
+    .nav a {
+        color: #fff;
+        font-size: 25px;
+        text-decoration: none;
+    }
+    
+    .nav a:hover {
+        text-decoration: underline;
+    }
+    
+    .cancel-button {
+        background-color: red;
+        color: white;
+        padding: 8px 16px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+            /* Add styles for the "Download Receipt" link */
+            .download-link {
+            color: #007bff; /* Link color */
+            text-decoration: none; /* Remove default underline */
+            display: inline-block;
+        }
+
+        .download-link:hover {
+            text-decoration: none; /* Remove underline on hover */
+        }
+
+        .download-icon {
+            margin-right: 5px; /* Add space between icon and text */
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <!-- Add a header with a navigation menu -->
+        <header>
+            <ul class="nav">
+                <li><a href="{% url 'clubhome' %}">Home</a></li>
+            </ul>
+        </header>
+
+        {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <h2><li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li></h2>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
+        <h1>Booking History</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Turf Name</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Total Cost</th>
+                    <th>Booked Date and Time</th>
+                    <th>Download Receipt</th> 
+                </tr>
+            </thead>
+            <tbody>
+                {% for booking in user_bookings %}
+                    <tr>
+                        <td>{{ booking.turf_listing.turf_name }}</td>
+                        <td>{{ booking.start_date }}</td>
+                        <td>{{ booking.end_date }}</td>
+                        <td>₹{{ booking.total_cost }}</td>
+                        <td>{{ booking.created_at }}</td>
+                        
+                        <td>
+                            <!-- Download Receipt link with icon -->
+                            <a href="{% url 'download_receipt' booking.id %}" class="download-link">
+                                <i class="fas fa-download download-icon"></i>Download Receipt
+                            </a>
+                            
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="5">No bookings found.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </main>
+
+    <!-- Add a footer with some information -->
+    <footer>
+        <p>© 2024 sportigo. All rights reserved.</p>
+    </footer>
+</body>
+</html>

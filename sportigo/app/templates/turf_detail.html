@@ -19,6 +19,7 @@
         <link rel="stylesheet" href="{% static 'css/style.css' %}">
         <link rel="stylesheet" type="text/css" href="{% static 'css/layerslider.css' %}">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         
         <script src="{% static 'js/vendor/modernizr.js' %}"></script>
     
@@ -225,7 +226,7 @@
                         <div class="container">
                             <div class="row">
                                 <ul>
-                                    <li><a href="{% url 'logout' %}">LOGOUT</a></li>
+                                    <li><a href="#">©Sportigo</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -233,7 +234,7 @@
                     <div class="header-lower clearfix">
                         <div class="container">
                             <div class="row">
-                                <h1 class="logo"><a href="index.html"><img src="{% static 'images/logo12.png' %}" width="100"
+                                <h1 class="logo"><a href="#"><img src="{% static 'images/logo12.png' %}" width="100"
                                             height="100" alt="image"></a></h1>
                                 <div class="menubar">
                                     <nav class="navbar">
@@ -339,7 +340,7 @@
     </footer>
     <script src="{% static 'js/vendor/vendor.js' %}"></script>
     <script src="{% static 'js/main.js' %}"></script>
-    <script>
+    <!-- <script>
         // Calculate the minimum and maximum dates (today and 5 days from today)
         var today = new Date();
         var maxDate = new Date(today);
@@ -352,7 +353,24 @@
         // Set the minimum and maximum dates in the input field
         document.getElementById("booking-date").setAttribute("min", todayFormatted);
         document.getElementById("booking-date").setAttribute("max", maxDateFormatted);
+    </script> -->
+    <script>
+        // Calculate the minimum and maximum dates (tomorrow and 5 days from tomorrow)
+        var tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1); // Tomorrow's date
+    
+        var maxDate = new Date(tomorrow);
+        maxDate.setDate(tomorrow.getDate() + 5); // 5 days from tomorrow
+    
+        // Format the minimum and maximum dates as YYYY-MM-DD
+        var tomorrowFormatted = tomorrow.toISOString().split('T')[0];
+        var maxDateFormatted = maxDate.toISOString().split('T')[0];
+    
+        // Set the minimum and maximum dates in the input field
+        document.getElementById("booking-date").setAttribute("min", tomorrowFormatted);
+        document.getElementById("booking-date").setAttribute("max", maxDateFormatted);
     </script>
+    
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function () {

@@ -129,6 +129,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL="app.Usertable"
 
 
+
+
+
+
 # LOGIN_URL = 'user_login'
 
 # settings.py
@@ -153,4 +157,5 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 RAZORPAY_KEY_ID = 'rzp_test_gfHLcbNXLAqvpT'
 RAZORPAY_KEY_SECRET = '2RsNQRDiZYjnJuYIuMVA4cDr'
+
 

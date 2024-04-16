@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nearest Turfs</title>
+</head>
+<body>
+    <h2>Nearest Turf Details</h2>
+    {% if sorted_turfs %}
+        <ul>
+            {% for turf in sorted_turfs %}
+                <li>
+                    <strong>Turf Name:</strong> {{ turf.0 }} <br>
+                    <strong>Latitude:</strong> {{ turf.1.0 }} <br>
+                    <strong>Longitude:</strong> {{ turf.1.1 }} <br>
+                    <strong>Distance:</strong> {{ turf.2 }} km <br>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No turfs found.</p>
+    {% endif %}
+</body>
+</html>

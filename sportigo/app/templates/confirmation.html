@@ -31,12 +31,27 @@
         .booking-details p {
             margin-bottom: 10px;
         }
-        /* Add your custom styles for payment options */
-        /* Styling for payment form, buttons, etc. */
+    
+        .navbar {
+            background-color: #333;
+            color: #fff;
+            padding: 10px 0;
+            text-align: center;
+        }
+        .navbar a {
+            color: #fff;
+            text-decoration: none;
+            margin: 0 10px;
+        }
     </style>
         
 </head>
 <body>
+    <div class="navbar">
+        <a href="{% url 'index2' %}">Home</a>
+        <a href="#">About</a>
+        <a href="#">Contact</a>
+    </div>
     <div class="confirmation-container">
         <h2>Booking Confirmation</h2>
         <div class="booking-details">

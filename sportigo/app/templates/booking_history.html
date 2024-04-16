@@ -3,117 +3,147 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <meta charset="UTF-8">
     <title>Booking History</title>
-<style>
-    /* Add styles for the body */
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f5f5f5;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-}
+    <style>
+        /* Global Styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
 
-/* Add styles for the main content */
-main {
-    flex: 1 0 auto;
-}
+        main {
+            flex: 1 0 auto;
+        }
 
-/* Add styles for the page footer */
-footer {
-    flex-shrink: 0;
-    background-color: #000000;
-    color: #fff;
-    padding: 10px;
-    text-align: center;
-}
+        footer {
+            flex-shrink: 0;
+            background-color: #000000;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+        }
 
-/* Add styles for the page header */
-h1 {
-    color: #333;
-    text-align: center;
-    margin-bottom: 20px;
-}
+        /* Header Styles */
+        header {
+            background-color: #333;
+            padding: 20px 0;
+            text-align: center;
+        }
 
-/* Add styles for the table */
-table {
-    border-collapse: collapse;
-    width: 100%;
-    background-color: #fff;
-    border-radius: 5px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-}
+        .logo {
+            width: 100px;
+            height: auto;
+        }
 
-table th, table td {
-    padding: 10px;
-    text-align: left;
-}
+        .nav {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            padding: 0;
+        }
 
-/* Add styles for table header */
-thead {
-    background-color: #333;
-    color: #fff;
-}
+        .nav li {
+            margin: 0 15px;
+        }
 
-/* Add styles for table rows */
-tr:nth-child(even) {
-    background-color: #f2f2f2;
-}
+        .nav a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 16px;
+            transition: color 0.3s ease;
+        }
 
-/* Add styles for the "No bookings found" message */
-td[colspan="5"] {
-    text-align: center;
-    padding: 20px;
-    background-color: #fff;
-}
+        .nav a:hover {
+            color: #ff9900;
+        }
 
-/* Add styles for the page footer */
+        /* Content Styles */
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
 
-/* Add styles for the site logo */
-.logo {
-    display: block;
-    margin: 0 auto;
-    width: 100px;
-    height: 100px;
-}
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+        }
 
-/* Add styles for the site navigation */
-.nav {
-    list-style: none;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 0;
-    padding: 0;
-    background-color: #333;
+        table th, table td {
+            padding: 15px;
+            text-align: left;
+        }
 
-}
+        thead {
+            background-color: #333;
+            color: #fff;
+        }
 
-.nav li {
-    margin: 0 10px;
-}
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
 
-.nav a {
-    color: #fff;
-    text-decoration: none;
-}
+        td[colspan="6"] {
+            text-align: center;
+            padding: 20px;
+            background-color: #fff;
+        }
 
-.nav a:hover {
-    text-decoration: underline;
-}
+        .cancel-button {
+            background-color: red;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
 
-</style>
+        .cancel-button:hover {
+            background-color: #ff6666;
+        }
+
+        .canceled, .expired {
+            color: #999;
+            font-style: italic;
+        }
+
+        /* Responsive Styles */
+        @media only screen and (max-width: 600px) {
+            .nav li {
+                margin: 0 10px;
+            }
+
+            .logo {
+                width: 80px;
+            }
+
+            h1 {
+                font-size: 24px;
+                margin-bottom: 20px;
+            }
+
+            table {
+                font-size: 14px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <main>
-    <!-- Add a header with a logo and a navigation menu -->
+<main>
     <header>
         <ul class="nav">
             <li><a href="{% url 'index2' %}">Home</a></li>
-            <li><a href="#">About</a></li>
-            <li><a href="#">Contact</a></li>
         </ul>
     </header>
 
@@ -130,32 +160,73 @@ td[colspan="5"] {
     <thead>
         <tr>
             <th>Turf Name</th>
-            <th>Booking Date</th>
+            <th>Reservation Date</th>
             <th>Time Slot</th>
             <th>Total Cost</th>
-            <th>Booking Date and Time</th>
+            <th>Booked Date and Time</th>
+            <th>Action</th>
         </tr>
     </thead>
     <tbody>
         {% for booking in user_bookings %}
+        {% if booking.booking_date > today %}
             <tr>
                 <td>{{ booking.turf_listing.turf_name }}</td>
                 <td>{{ booking.booking_date }}</td>
                 <td>{{ booking.start_time }} - {{ booking.end_time }}</td>
                 <td>₹{{ booking.total_cost }}</td>
                 <td>{{ booking.created_at }}</td>
+                <td>
+                    {% if not booking.is_canceled %}
+                        <button class="cancel-button" onclick="cancelBooking('{{ booking.id }}')">Cancel</button>
+                    {% else %}
+                        <span class="canceled">Canceled</span>
+                    {% endif %}
+                </td>
             </tr>
-        {% empty %}
+        {% else %}
             <tr>
-                <td colspan="5">No bookings found.</td>
+                <td>{{ booking.turf_listing.turf_name }}</td>
+                <td>{{ booking.booking_date }}</td>
+                <td>{{ booking.start_time }} - {{ booking.end_time }}</td>
+                <td>₹{{ booking.total_cost }}</td>
+                <td>{{ booking.created_at }}</td>
+                <td><span class="expired">Booking Expired</span></td>
             </tr>
-        {% endfor %}
+        {% endif %}
+    {% empty %}
+        <tr>
+            <td colspan="6">No bookings found.</td>
+        </tr>
+    {% endfor %}
+    
     </tbody>
 </table>
+
 </main>
-<!-- Add a footer with some information -->
+
 <footer>
     <p>© 2023 sportigo. All rights reserved.</p>
 </footer>
+
+<script>
+    function cancelBooking(bookingId) {
+        $.ajax({
+            type: 'POST',
+            url: '/cancel_booking/' + bookingId + '/',
+            data: {
+                // Additional data if needed
+            },
+            success: function(response) {
+                alert('Booking cancelled successfully');
+                location.reload(); // Reload the page or update the UI as needed
+            },
+            error: function(xhr, status, error) {
+                alert('An error occurred while canceling the booking.');
+            }
+        });
+    }
+</script>
+
 </body>
 </html>
